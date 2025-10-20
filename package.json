@@ -6,9 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "docker:build": "docker build -t diyws .",
-    "docker:init-container": "docker run --name diyws -p 3000:3000 -v /app/node_modules -v .:/app diyws",
-    "docker:start": "docker start -a diyws"
+    "docker:dev:build": "docker build -t diyws-dev -f Dockerfile.dev .",
+    "docker:dev:init-container": "docker run --name diyws-dev -p 3000:3000 -v /app/node_modules -v .:/app diyws-dev",
+    "docker:dev:start": "docker start -a diyws-dev",
+    "docker:prod:build": "docker build -t diyws -f Dockerfile.prod .",
+    "docker:prod:init-container": "docker run --name diyws -p 3000:3000 diyws",
+    "docker:prod:start": "docker start -a diyws"
   },
   "dependencies": {
     "@renatodellosso/typed-api-client": "^1.0.9",
