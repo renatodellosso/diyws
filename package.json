@@ -7,10 +7,10 @@
     "build": "next build --turbopack",
     "start": "next start",
     "docker:dev:build": "docker build -t diyws-dev -f Dockerfile.dev .",
-    "docker:dev:init-container": "docker run --name diyws-dev -p 3000:3000 -v /app/node_modules -v .:/app diyws-dev",
+    "docker:dev:init-container": "docker run --name diyws-dev -p 3000:3000 -v /app/node_modules -v .:/app -v /var/run/docker.sock:/var/run/docker.sock diyws-dev",
     "docker:dev:start": "docker start -a diyws-dev",
     "docker:prod:build": "docker build -t diyws -f Dockerfile.prod .",
-    "docker:prod:init-container": "docker run --name diyws -p 3000:3000 diyws",
+    "docker:prod:init-container": "docker run --name diyws -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock diyws",
     "docker:prod:start": "docker start -a diyws"
   },
   "dependencies": {
