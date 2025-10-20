@@ -15,6 +15,10 @@ class DockerService {
       return false;
     }
   }
+
+  async getImages() {
+    return this.docker.listImages();
+  }
 }
 
 export default new DockerService();

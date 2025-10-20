@@ -1,9 +1,28 @@
-import dockerService from "@/lib/dockerService";
+"use client";
 
-export default async function Dashboard() {
-  const isDockerRunning = await dockerService.isDockerRunning();
+import DockerOfflineScreen from "@/components/screens/DockerOfflineScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
+import api from "@/lib/api";
+import { ServerState } from "@/lib/types";
+import { useEffect, useState } from "react";
 
-  return (
-    <div>{isDockerRunning ? "Docker is running" : "Docker is not running"}</div>
-  );
+export default function Dashboard() {
+  const [serverState, setServerState] = useState<ServerState>();
+
+  useEffect(() => {
+    api.serverState.get().then(async (res) => {
+      const state = await res.json();
+      setServerState(state);
+    });
+  }, []);
+
+  if (!serverState) {
+    return <LoadingScreen />;
+  }
+
+  if (!serverState?.dockerRunning) {
+    return <DockerOfflineScreen />;
+  }
+
+  return <div>Docker is running</div>;
 }

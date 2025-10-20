@@ -6,12 +6,11 @@ import { GET } from "@renatodellosso/typed-api-client/helpers";
 import { ServerState } from "./types";
 
 const api = {
-  state: {
+  serverState: {
     get: GET<ServerState>(),
   },
 } satisfies ApiSchema;
 
-export function apiClient() {
-  initApiClient(api, process.env.BASE_URL);
-  return api;
-}
+initApiClient(api, process.env.NEXT_PUBLIC_BASE_URL);
+
+export default api;
