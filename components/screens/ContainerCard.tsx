@@ -68,8 +68,6 @@ export default function ContainerCard({
     setCurrentContainer(container);
   }, [container]);
 
-  console.log(currentContainer);
-
   return (
     <div className="card bg-base-100 shadow-sm">
       <div className="card-body">
