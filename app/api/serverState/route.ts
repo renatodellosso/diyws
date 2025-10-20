@@ -1,10 +1,24 @@
 import dockerService from "@/lib/dockerService";
+import { ServerState } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   const isDockerUp = await dockerService.isDockerRunning();
 
-  console.log("Docker running:", isDockerUp);
+  if (!isDockerUp) {
+    const state: ServerState = {
+      dockerRunning: false,
+      images: [],
+      containers: [],
+    };
+    return NextResponse.json(state);
+  }
 
-  return NextResponse.json({ dockerRunning: isDockerUp });
+  const state: ServerState = {
+    dockerRunning: true,
+    images: await dockerService.getImages(),
+    containers: await dockerService.getContainers(),
+  };
+
+  return NextResponse.json(state);
 }

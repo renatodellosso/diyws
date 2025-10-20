@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "daisyui": {
+      "url": "https://gitmcp.io/saadeghi/daisyui",
+      "type": "http"
+    }
+  },
+  "inputs": []
+}
