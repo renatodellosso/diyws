@@ -1,4 +1,5 @@
-import Docker, { ContainerInfo } from "dockerode";
+import Docker from "dockerode";
+import { ContainerDetails } from "./types";
 
 class DockerService {
   docker: Docker;
@@ -20,11 +21,17 @@ class DockerService {
     return this.docker.listImages();
   }
 
-  async getContainers() {
-    return this.docker.listContainers({ all: true });
+  async getContainers(): Promise<ContainerDetails[]> {
+    const containerInfos = await this.docker.listContainers({ all: true });
+    const containerDetailsPromises = containerInfos.map((info) =>
+      this.getContainerDetails(info)
+    );
+    return Promise.all(containerDetailsPromises);
   }
 
-  async getContainerInfo(containerId: string): Promise<ContainerInfo | null> {
+  async getContainerInfo(
+    containerId: string
+  ): Promise<ContainerDetails | null> {
     // I can't find a way to get a single container's info directly,
     // this.docker.getContainer(containerId).inspect() gives different info than listContainers
     const containers = await this.docker.listContainers({ all: true });
@@ -33,7 +40,21 @@ class DockerService {
       return null;
     }
 
-    return container;
+    return this.getContainerDetails(container);
+  }
+
+  private async getContainerDetails(
+    containerInfo: Docker.ContainerInfo
+  ): Promise<ContainerDetails> {
+    const container = this.docker.getContainer(containerInfo.Id);
+    const [details, stats] = await Promise.all([
+      container.inspect(),
+      containerInfo.State === "running"
+        ? container.stats({ stream: false })
+        : undefined,
+    ]);
+
+    return { ...details, stats, ...containerInfo };
   }
 
   async setContainerState(containerId: string, shouldRun: boolean) {

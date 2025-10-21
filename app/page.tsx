@@ -5,7 +5,7 @@ import ImageCard from "@/components/ImageCard";
 import ServerStateContext from "@/lib/ServerStateContext";
 import Link from "next/link";
 import { useContext } from "react";
-import { FiPlus, FiWifi, FiWifiOff } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 
 export default function Dashboard() {
   const serverState = useContext(ServerStateContext);
@@ -16,7 +16,7 @@ export default function Dashboard() {
 
       <div>
         <div className="flex items-center gap-2">
-          <h2 className="text-2xl">Services</h2>
+          <h2 className="text-2xl mb-1">Services</h2>
           <Link
             href="/service/create"
             className="rounded-full hover:bg-base-200 hover:shadow-sm transition-all duration-300 p-2 cursor-pointer"
@@ -48,7 +48,7 @@ export default function Dashboard() {
       <div className="divider mx-4" />
 
       <div>
-        <h2 className="text-2xl">Containers</h2>
+        <h2 className="text-2xl mb-1">Containers</h2>
         <div className="flex flex-col gap-2">
           {serverState.containers.length === 0 ? (
             <p>No containers found.</p>
@@ -63,7 +63,7 @@ export default function Dashboard() {
       <div className="divider mx-4" />
 
       <div>
-        <h2 className="text-2xl">Images</h2>
+        <h2 className="text-2xl mb-1">Images</h2>
         <div className="flex flex-col gap-2">
           {serverState.images.length === 0 ? (
             <p>No images found.</p>

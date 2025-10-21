@@ -3,7 +3,7 @@ export default function LoadingScreen() {
     <div className="w-full h-screen flex items-center justify-center">
       <div className="flex flex-col items-center gap-2">
         <span className="loading loading-dots loading-md" />
-        <div>Loading...</div>
+        <div>DIYWS loading...</div>
       </div>
     </div>
   );

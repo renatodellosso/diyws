@@ -1,10 +1,10 @@
 import { ContainerInfo, ImageInfo } from "dockerode";
 import dockerService from "./dockerService";
-import { ServiceConfig, Service } from "./types";
+import { ServiceConfig, Service, ContainerDetails } from "./types";
 
 export function populateServices(
   services: ServiceConfig[],
-  containers: ContainerInfo[],
+  containers: ContainerDetails[],
   images: ImageInfo[]
 ): Service[] {
   return services.map((config) => {

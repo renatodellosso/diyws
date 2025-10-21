@@ -27,12 +27,15 @@ export default function RootLayout({
 }>) {
   const [serverState, setServerState] = useState<ServerState>();
   const [lastUpdated, setLastUpdated] = useState<Date>();
+  const [pingTimeMs, setPingTimeMs] = useState<number>();
 
   async function updateServerState() {
+    const start = performance.now();
     const res = await api.serverState.get();
     const state = await res.json();
     setServerState(state);
     setLastUpdated(new Date());
+    setPingTimeMs(performance.now() - start);
   }
 
   useEffect(() => {
@@ -48,7 +51,7 @@ export default function RootLayout({
       >
         {serverState ? (
           <ServerStateContext
-            value={{ ...serverState, lastUpdated: lastUpdated! }}
+            value={{ ...serverState, lastUpdated, pingTimeMs }}
           >
             <Toaster position="top-right" />
             <Header />

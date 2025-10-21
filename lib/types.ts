@@ -1,9 +1,14 @@
-import { ContainerInfo, ImageInfo } from "dockerode";
+import {
+  ContainerInfo,
+  ContainerInspectInfo,
+  ContainerStats,
+  ImageInfo,
+} from "dockerode";
 
 export type ServerState = {
   dockerRunning: boolean;
   images: ImageInfo[];
-  containers: ContainerInfo[];
+  containers: ContainerDetails[];
   services: Service[];
 };
 
@@ -17,3 +22,8 @@ export type Service = {
   container?: ContainerInfo;
   image?: ImageInfo;
 };
+
+export type ContainerDetails = Omit<
+  ContainerInspectInfo,
+  keyof ContainerInfo
+> & { stats?: ContainerStats } & ContainerInfo;

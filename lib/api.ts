@@ -4,9 +4,8 @@ import {
   initApiClient,
 } from "@renatodellosso/typed-api-client/client";
 import { GET, PATCH, POST } from "@renatodellosso/typed-api-client/helpers";
-import { ServerState, Service } from "./types";
+import { ContainerDetails, ServerState, Service } from "./types";
 import z from "zod";
-import { ContainerInfo } from "dockerode";
 
 const api = {
   serverState: {
@@ -14,10 +13,10 @@ const api = {
   },
   containers: {
     containerId: dynamicRoute(z.string()).with({
-      get: GET<ContainerInfo>(),
+      get: GET<ContainerDetails>(),
       state: {
         update: PATCH<
-          ContainerInfo,
+          ContainerDetails,
           z.ZodObject<{
             running: z.ZodBoolean;
           }>

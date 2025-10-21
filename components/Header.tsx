@@ -7,7 +7,9 @@ export default function Header() {
 
   return (
     <header className="flex items-center gap-4 p-4 border-b border-base-300">
-      <Link href="/" className="text-3xl font-bold">DIYWS</Link>
+      <Link href="/" className="text-3xl font-bold">
+        DIYWS
+      </Link>
       <p>
         Docker Status:{" "}
         {serverState.dockerRunning ? (
@@ -22,6 +24,7 @@ export default function Header() {
       </p>
       <p>{serverState.images.length} images</p>
       <p>Last Updated: {serverState.lastUpdated?.toLocaleTimeString()}</p>
+      <p>Ping: {serverState.pingTimeMs?.toFixed()} ms</p>
     </header>
   );
 }
