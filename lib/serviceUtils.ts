@@ -1,6 +1,10 @@
 import { ContainerInfo, ImageInfo } from "dockerode";
-import dockerService from "./dockerService";
 import { ServiceConfig, Service, ContainerDetails } from "./types";
+
+export function isValidServiceName(name: string): boolean {
+  const regex = /^[a-zA-Z0-9-_]+$/;
+  return regex.test(name);
+}
 
 export function populateServices(
   services: ServiceConfig[],
@@ -20,3 +24,4 @@ export function populateServices(
     };
   });
 }
+

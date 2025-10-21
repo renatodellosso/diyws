@@ -2,6 +2,7 @@
 
 import ContainerCard from "@/components/ContainerCard";
 import ImageCard from "@/components/ImageCard";
+import ServiceCard from "@/components/ServiceCard";
 import ServerStateContext from "@/lib/ServerStateContext";
 import Link from "next/link";
 import { useContext } from "react";
@@ -29,17 +30,7 @@ export default function Dashboard() {
             <p>No services found.</p>
           ) : (
             serverState.services.map((service) => (
-              <div
-                key={service.config.name}
-                className="border border-base-300 rounded-lg p-4"
-              >
-                <h3 className="text-xl">{service.config.name}</h3>
-                <p>Image: {service.config.image}</p>
-                <p>
-                  Status:{" "}
-                  {service.container ? service.container.State : "Not running"}
-                </p>
-              </div>
+              <ServiceCard key={service.config.name} service={service} />
             ))
           )}
         </div>

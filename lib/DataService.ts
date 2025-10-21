@@ -5,6 +5,15 @@ namespace DataService {
   const FILE_PATH = "./data/";
   const SERVICES_FILE = FILE_PATH + "services.json";
 
+  async function writeServiceList(services: ServiceConfig[]) {
+    await fs.mkdir(FILE_PATH, { recursive: true });
+    await fs.writeFile(
+      SERVICES_FILE,
+      JSON.stringify(services, null, 2),
+      "utf-8"
+    );
+  }
+
   export async function getServiceList(): Promise<ServiceConfig[]> {
     try {
       const data = await fs.readFile(SERVICES_FILE, "utf-8");
@@ -23,12 +32,20 @@ namespace DataService {
 
     services.push(config);
 
-    await fs.mkdir(FILE_PATH, { recursive: true });
-    await fs.writeFile(
-      SERVICES_FILE,
-      JSON.stringify(services, null, 2),
-      "utf-8"
-    );
+    await writeServiceList(services);
+
+    return config;
+  }
+
+  export async function deleteService(name: string) {
+    const services = await getServiceList();
+    const filteredServices = services.filter((s) => s.name !== name);
+
+    if (services.length === filteredServices.length) {
+      throw new Error("Service not found");
+    }
+
+    await writeServiceList(filteredServices);
   }
 }
 
