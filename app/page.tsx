@@ -1,38 +1,21 @@
 "use client";
 
-import ContainerCard from "@/components/screens/ContainerCard";
-import LoadingScreen from "@/components/screens/LoadingScreen";
-import api from "@/lib/api";
-import { ServerState } from "@/lib/types";
-import { useEffect, useState } from "react";
-import { FiWifi, FiWifiOff } from "react-icons/fi";
+import ContainerCard from "@/components/ContainerCard";
+import ImageCard from "@/components/ImageCard";
+import ServerStateContext from "@/lib/ServerStateContext";
+import Link from "next/link";
+import { useContext } from "react";
+import { FiPlus, FiWifi, FiWifiOff } from "react-icons/fi";
 
 export default function Dashboard() {
-  const [serverState, setServerState] = useState<ServerState>();
-  const [lastUpdated, setLastUpdated] = useState<Date>();
-
-  async function updateServerState() {
-    const res = await api.serverState.get();
-    const state = await res.json();
-    setServerState(state);
-    setLastUpdated(new Date());
-  }
-
-  useEffect(() => {
-    updateServerState();
-    const interval = setInterval(updateServerState, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!serverState) {
-    return <LoadingScreen />;
-  }
+  const serverState = useContext(ServerStateContext);
+  console.log("Server State:", serverState);
 
   return (
     <div className="p-4">
       <div>
         <h1 className="text-4xl">Dashboard</h1>
-        <p>Last updated: {lastUpdated?.toLocaleTimeString()}</p>
+        <p>Last updated: {serverState?.lastUpdated?.toLocaleTimeString()}</p>
         <div className="px-24 py-8 grid grid-cols-3 grid-rows-1 text-xl">
           {serverState.dockerRunning ? (
             <div className="flex items-center gap-1 text-success">
@@ -56,27 +39,64 @@ export default function Dashboard() {
       <div className="divider mx-4" />
 
       <div>
+        <div className="flex items-center gap-2">
+          <h2 className="text-2xl">Services</h2>
+          <Link
+            href="/service/create"
+            className="rounded-full hover:bg-base-200 hover:shadow-sm transition-all duration-300 p-2 cursor-pointer"
+          >
+            <FiPlus size={24} />
+          </Link>
+        </div>
+        <div className="flex flex-col gap-2">
+          {serverState.services.length === 0 ? (
+            <p>No services found.</p>
+          ) : (
+            serverState.services.map((service) => (
+              <div
+                key={service.config.name}
+                className="border border-base-300 rounded-lg p-4"
+              >
+                <h3 className="text-xl">{service.config.name}</h3>
+                <p>Image: {service.config.image}</p>
+                <p>
+                  Status:{" "}
+                  {service.container ? service.container.State : "Not running"}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      <div className="divider mx-4" />
+
+      <div>
         <h2 className="text-2xl">Containers</h2>
-        {serverState.containers.length === 0 ? (
-          <p>No containers found.</p>
-        ) : (
-          serverState.containers.map((container) => (
-            <ContainerCard key={container.Id} container={container} />
-          ))
-        )}
+        <div className="flex flex-col gap-2">
+          {serverState.containers.length === 0 ? (
+            <p>No containers found.</p>
+          ) : (
+            serverState.containers.map((container) => (
+              <ContainerCard key={container.Id} container={container} />
+            ))
+          )}
+        </div>
       </div>
 
       <div className="divider mx-4" />
 
       <div>
         <h2 className="text-2xl">Images</h2>
-        <ul>
-          {serverState.images.map((image) => (
-            <li key={image.Id}>
-              {image.Id} - {image.RepoTags?.join(", ")}
-            </li>
-          ))}
-        </ul>
+        <div className="flex flex-col gap-2">
+          {serverState.images.length === 0 ? (
+            <p>No images found.</p>
+          ) : (
+            serverState.images.map((image) => (
+              <ImageCard key={image.Id} image={image} />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export async function PATCH(
   const requestBody = await request.json();
   const parsedBody = api.containers
     .containerId(containerId)
-    .state.patch.bodySchema!.safeParse(requestBody);
+    .state.update.bodySchema!.safeParse(requestBody);
 
   if (!parsedBody.success) {
     return new Response(parsedBody.error.message, { status: 400 });

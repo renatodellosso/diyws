@@ -35,7 +35,7 @@ export default function ContainerCard({
     setStateUpdating(true);
     const promise = api.containers
       .containerId(container.Id)
-      .state.patch({
+      .state.update({
         running: newState,
       })
       .then(async (res) => {

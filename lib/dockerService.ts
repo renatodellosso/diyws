@@ -44,6 +44,10 @@ class DockerService {
       await container.stop();
     }
   }
+
+  async createImage(imageName: string) {
+    this.docker.createImage({ fromImage: imageName });
+  }
 }
 
 export default new DockerService();
