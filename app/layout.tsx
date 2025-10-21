@@ -8,6 +8,7 @@ import { ServerState } from "@/lib/types";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import LoadingScreen from "@/components/screens/LoadingScreen";
+import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +29,10 @@ export default function RootLayout({
   const [lastUpdated, setLastUpdated] = useState<Date>();
 
   async function updateServerState() {
-    console.log("Updating server state...");
     const res = await api.serverState.get();
     const state = await res.json();
     setServerState(state);
     setLastUpdated(new Date());
-    console.log("Server state updated:", state);
   }
 
   useEffect(() => {
@@ -52,6 +51,7 @@ export default function RootLayout({
             value={{ ...serverState, lastUpdated: lastUpdated! }}
           >
             <Toaster position="top-right" />
+            <Header />
             {children}
           </ServerStateContext>
         ) : (

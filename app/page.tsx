@@ -9,34 +9,10 @@ import { FiPlus, FiWifi, FiWifiOff } from "react-icons/fi";
 
 export default function Dashboard() {
   const serverState = useContext(ServerStateContext);
-  console.log("Server State:", serverState);
 
   return (
     <div className="p-4">
-      <div>
-        <h1 className="text-4xl">Dashboard</h1>
-        <p>Last updated: {serverState?.lastUpdated?.toLocaleTimeString()}</p>
-        <div className="px-24 py-8 grid grid-cols-3 grid-rows-1 text-xl">
-          {serverState.dockerRunning ? (
-            <div className="flex items-center gap-1 text-success">
-              <FiWifi />
-              <div>Docker online</div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1 text-error">
-              <FiWifiOff />
-              <div>Docker offline</div>
-            </div>
-          )}
-          <div>{serverState.images.length} images</div>
-          <div>
-            {serverState.containers.filter((c) => c.State === "running").length}{" "}
-            running containers
-          </div>
-        </div>
-      </div>
-
-      <div className="divider mx-4" />
+      <h1 className="text-4xl">Dashboard</h1>
 
       <div>
         <div className="flex items-center gap-2">
