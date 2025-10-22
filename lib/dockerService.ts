@@ -88,27 +88,33 @@ class DockerService {
       return existing;
     }
 
-    let finished = false;
+    let state: "waiting" | "finished" | "error" = "waiting";
 
     console.log(`Pulling image: ${imageName}`);
     this.docker.pull(imageName, {}, (err, stream) => {
       if (err) {
         console.error("Error pulling image:", err);
+        state = "error";
         return;
       }
       this.docker.modem.followProgress(stream!, (pullErr, output) => {
         if (pullErr) {
           console.error("Error during image pull:", pullErr);
+          state = "error";
           return;
         }
         console.log(`Successfully pulled image: ${imageName}`);
-        finished = true;
+        state = "finished";
       });
     });
 
     // Wait for the pull to finish
-    while (!finished) {
+    while (state === "waiting") {
       await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    if (state === "error") {
+      throw new Error(`Failed to pull image: ${imageName}`);
     }
 
     return this.docker.getImage(imageName).inspect();

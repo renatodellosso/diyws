@@ -12,11 +12,6 @@ export async function POST(request: Request) {
       return new Response(parsed.error.message, { status: 400 });
     }
 
-    if (!isValidServiceName(parsed.data.name)) {
-      throw new Error(
-        "Invalid service name. Only alphanumeric characters, hyphens, and underscores are allowed."
-      );
-    }
     const service = await createService(parsed.data);
 
     console.log("Created service:", service.config);

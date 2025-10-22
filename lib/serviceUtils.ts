@@ -28,7 +28,23 @@ export function populateServices(
   });
 }
 
+export async function isServiceNameInUse(name: string): Promise<boolean> {
+  const services = await DataService.getServiceList();
+  return services.some((service) => service.name === name);
+}
+
+/**
+ * Throws if service name is invalid or already in use.
+ */
 export async function createService(config: ServiceConfig): Promise<Service> {
+  if (!isValidServiceName(config.name)) {
+    throw new Error("Invalid service name.");
+  }
+
+  if (await isServiceNameInUse(config.name)) {
+    throw new Error("Service name is already in use.");
+  }
+
   console.log("Creating service with config:", config);
 
   const image = await dockerService.createImage(config.image);
@@ -48,4 +64,23 @@ export async function createService(config: ServiceConfig): Promise<Service> {
     container: container!,
     image: image!,
   });
+}
+
+export async function deleteService(serviceId: string): Promise<void> {
+  console.log("Deleting service with ID:", serviceId);
+
+  await DataService.deleteService(serviceId);
+  console.log("Deleted service config from data store.");
+
+  try {
+    const container = dockerService.docker.getContainer(serviceId);
+    await container.remove({ force: true });
+    console.log("Deleted container:", serviceId);
+  } catch (err: any) {
+    if (err.statusCode === 404) {
+      console.log("Container not found, skipping deletion:", serviceId);
+    } else {
+      throw err;
+    }
+  }
 }

@@ -1,10 +1,18 @@
 import api from "@/lib/api";
-import { Service } from "@/lib/types";
+import { ServerState, Service } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { FiTrash } from "react-icons/fi";
 
-export default function ServiceCard({ service }: { service: Service }) {
+export default function ServiceCard({
+  service,
+  updateServerState,
+}: {
+  service: Service;
+  updateServerState: (
+    update: (prev: ServerState) => Partial<ServerState>
+  ) => void;
+}) {
   const router = useRouter();
 
   async function handleDelete() {
@@ -27,7 +35,11 @@ export default function ServiceCard({ service }: { service: Service }) {
 
     await promise;
 
-    router.push("/");
+    updateServerState((prev) => ({
+      services: prev.services.filter(
+        (s) => s.config.name !== service.config.name
+      ),
+    }));
   }
 
   return (

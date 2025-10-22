@@ -30,7 +30,11 @@ export default function Dashboard() {
             <p>No services found.</p>
           ) : (
             serverState.services.map((service) => (
-              <ServiceCard key={service.config.name} service={service} />
+              <ServiceCard
+                key={service.config.name}
+                service={service}
+                updateServerState={serverState.update}
+              />
             ))
           )}
         </div>

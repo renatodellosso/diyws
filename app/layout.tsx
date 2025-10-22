@@ -38,6 +38,13 @@ export default function RootLayout({
     setPingTimeMs(performance.now() - start);
   }
 
+  function update(update: (prev: ServerState) => Partial<ServerState>) {
+    setServerState((prevState) => ({
+      ...prevState!,
+      ...update(prevState!),
+    }));
+  }
+
   useEffect(() => {
     updateServerState();
     const interval = setInterval(updateServerState, 5000);
@@ -51,7 +58,13 @@ export default function RootLayout({
       >
         {serverState ? (
           <ServerStateContext
-            value={{ ...serverState, lastUpdated, pingTimeMs }}
+            value={{
+              ...serverState,
+              lastUpdated,
+              pingTimeMs,
+              fetch: updateServerState,
+              update,
+            }}
           >
             <Toaster position="top-right" />
             <Header />

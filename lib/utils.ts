@@ -17,7 +17,7 @@ export function formatPercent(decimal: number): string {
 }
 
 export async function throwIfError<T>(res: Response): Promise<Response> {
-  if (!res.ok) {
+  if (res.ok == false) {
     const error = await res.json();
     throw new Error(
       error?.error || `API request failed with status ${res.status}`

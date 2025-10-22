@@ -23,6 +23,9 @@ export default function CreateServicePage() {
       error: (err) =>
         `Failed to create service '${serviceConfig.name}': ${err.message}`,
     });
+
+    await promise;
+    location.href = "/";
   }
 
   return (
