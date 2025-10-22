@@ -21,10 +21,16 @@ export default function Header() {
           )}
         </p>
         <p>
+          {
+            serverState.services.filter((s) => s.container?.State === "running")
+              .length
+          }
+          /{serverState.services.length} services online
+        </p>
+        <p>
           {serverState.containers.filter((c) => c.State === "running").length}/
           {serverState.containers.length} containers running
         </p>
-        <p>{serverState.images.length} images</p>
         <p>Last Updated: {serverState.lastUpdated?.toLocaleTimeString()}</p>
         <p>Ping: {serverState.pingTimeMs?.toFixed()} ms</p>
       </div>

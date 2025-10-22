@@ -52,10 +52,20 @@ export default function ServiceCard({
     }));
   }
 
+  const online = container?.State === "running";
+
   return (
     <div className="card bg-base-100 shadow-sm">
       <div className="card-body">
-        <div className="card-title text-2xl flex">
+        <div className="card-title text-2xl flex items-center">
+          {online ? (
+            <div className="status status-success" />
+          ) : (
+            <div className="inline-grid *:[grid-area:1/1]">
+              <div className="status status-error animate-ping"></div>
+              <div className="status status-error"></div>
+            </div>
+          )}
           <h3>{service.config.name}</h3>
           <button
             onClick={handleDelete}
