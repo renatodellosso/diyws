@@ -66,8 +66,62 @@ class DockerService {
     }
   }
 
+  async getImageInfo(imageName: string, errorOnNotFound = true) {
+    try {
+      const image = this.docker.getImage(imageName);
+      return await image.inspect();
+    } catch (err) {
+      if (errorOnNotFound) {
+        throw err;
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Does not create a new image if it already exists
+   */
   async createImage(imageName: string) {
-    this.docker.createImage({ fromImage: imageName });
+    const existing = await this.getImageInfo(imageName, false);
+    if (existing) {
+      console.log(`Image ${imageName} already exists.`);
+      return existing;
+    }
+
+    let finished = false;
+
+    console.log(`Pulling image: ${imageName}`);
+    this.docker.pull(imageName, {}, (err, stream) => {
+      if (err) {
+        console.error("Error pulling image:", err);
+        return;
+      }
+      this.docker.modem.followProgress(stream!, (pullErr, output) => {
+        if (pullErr) {
+          console.error("Error during image pull:", pullErr);
+          return;
+        }
+        console.log(`Successfully pulled image: ${imageName}`);
+        finished = true;
+      });
+    });
+
+    // Wait for the pull to finish
+    while (!finished) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    return this.docker.getImage(imageName).inspect();
+  }
+
+  async createContainer(imageName: string, containerName: string) {
+    const container = await this.docker.createContainer({
+      Image: imageName,
+      name: containerName,
+    });
+
+    console.log(`Created container: ${containerName}`);
+    return container.inspect();
   }
 }
 

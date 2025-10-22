@@ -19,6 +19,7 @@ namespace DataService {
       const data = await fs.readFile(SERVICES_FILE, "utf-8");
       return JSON.parse(data) as ServiceConfig[];
     } catch (e) {
+      console.error("Error reading service list:", e);
       return [];
     }
   }

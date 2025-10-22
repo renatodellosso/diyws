@@ -1,30 +1,25 @@
 import api from "@/lib/api";
 import DataService from "@/lib/DataService";
-import { isValidServiceName } from "@/lib/serviceUtils";
+import { createService, isValidServiceName } from "@/lib/serviceUtils";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const jsonRaw = await request.json();
-
-  const parsed = api.services.create.bodySchema!.safeParse(jsonRaw);
-  if (!parsed.success) {
-    return new Response(parsed.error.message, { status: 400 });
-  }
-
-  if (!isValidServiceName(parsed.data.name)) {
-    return NextResponse.json(
-      {
-        error:
-          "Invalid service name. Only alphanumeric characters, hyphens, and underscores are allowed.",
-      },
-      { status: 400 }
-    );
-  }
-
   try {
-    const service = await DataService.createService(parsed.data);
+    const jsonRaw = await request.json();
 
-    console.log("Created service:", service);
+    const parsed = api.services.create.bodySchema!.safeParse(jsonRaw);
+    if (!parsed.success) {
+      return new Response(parsed.error.message, { status: 400 });
+    }
+
+    if (!isValidServiceName(parsed.data.name)) {
+      throw new Error(
+        "Invalid service name. Only alphanumeric characters, hyphens, and underscores are allowed."
+      );
+    }
+    const service = await createService(parsed.data);
+
+    console.log("Created service:", service.config);
 
     return NextResponse.json(service, { status: 201 });
   } catch (error: any) {

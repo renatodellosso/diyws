@@ -3,6 +3,7 @@ import {
   ContainerInspectInfo,
   ContainerStats,
   ImageInfo,
+  ImageInspectInfo,
 } from "dockerode";
 
 export type ServerState = {
@@ -19,8 +20,8 @@ export type ServiceConfig = {
 
 export type Service = {
   config: ServiceConfig;
-  container?: ContainerInfo;
-  image?: ImageInfo;
+  container?: ContainerInfo | ContainerInspectInfo;
+  image?: ImageInfo | ImageInspectInfo;
 };
 
 export type ContainerDetails = Omit<

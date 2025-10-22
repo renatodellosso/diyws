@@ -1,9 +1,12 @@
 import api from "@/lib/api";
 import { Service } from "@/lib/types";
+import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { FiTrash } from "react-icons/fi";
 
 export default function ServiceCard({ service }: { service: Service }) {
+  const router = useRouter();
+
   async function handleDelete() {
     if (
       !confirm(
@@ -21,6 +24,10 @@ export default function ServiceCard({ service }: { service: Service }) {
       error: (err) =>
         `Failed to delete service '${service.config.name}': ${err.message}`,
     });
+
+    await promise;
+
+    router.push("/");
   }
 
   return (
