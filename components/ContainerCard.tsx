@@ -1,4 +1,5 @@
 import api from "@/lib/api";
+import { UpdateServerStateFn } from "@/lib/ServerStateContext";
 import { ContainerDetails } from "@/lib/types";
 import { formatBytes, formatPercent, throwOnError } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -6,23 +7,30 @@ import toast from "react-hot-toast";
 
 export default function ContainerCard({
   container,
+  updateServerState,
 }: {
   container: ContainerDetails;
+  updateServerState: UpdateServerStateFn;
 }) {
-  const [currentContainer, setCurrentContainer] =
-    useState<ContainerDetails>(container);
   const [stateUpdating, setStateUpdating] = useState(false);
 
-  const isRunning = currentContainer.State === "running";
-  const containerName =
-    currentContainer.Names?.join(", ") || currentContainer.Id;
+  const isRunning = container.State === "running";
+  const containerName = container.Names?.join(", ") || container.Id;
+
+  function setCurrentContainer(updatedContainer: ContainerDetails) {
+    updateServerState((prev) => ({
+      containers: prev.containers.map((c) =>
+        c.Id === updatedContainer.Id ? updatedContainer : c
+      ),
+    }));
+  }
 
   async function toggleContainerState() {
     const newState = !isRunning;
 
     if (
       !newState &&
-      currentContainer.Name.includes("diyws") &&
+      container.Name.includes("diyws") &&
       !confirm(
         `WARNING: This container may be the DIYWS interface. If you stop it, you may lose access to the web interface. Are you sure you want to stop container '${containerName}'?`
       )
@@ -73,32 +81,31 @@ export default function ContainerCard({
               isRunning ? "badge badge-success ml-2" : "badge badge-error ml-2"
             }
           >
-            {currentContainer.State}
+            {container.State}
           </span>
           <button className="btn btn-sm" onClick={toggleContainerState}>
             {stateUpdating ? "Updating..." : isRunning ? "Stop" : "Start"}
           </button>
         </div>
-        <p>ID: {currentContainer.Id}</p>
-        <p>Status: {currentContainer.Status}</p>
-        <p>Image: {currentContainer.Image}</p>
-        {isRunning && currentContainer.stats && (
+        <p>ID: {container.Id}</p>
+        <p>Status: {container.Status}</p>
+        <p>Image: {container.Image}</p>
+        {isRunning && container.stats && (
           <>
             <p>
-              Memory Usage:{" "}
-              {formatBytes(currentContainer.stats.memory_stats.usage)} /{" "}
-              {formatBytes(currentContainer.stats.memory_stats.limit)} (
+              Memory Usage: {formatBytes(container.stats.memory_stats.usage)} /{" "}
+              {formatBytes(container.stats.memory_stats.limit)} (
               {formatPercent(
-                currentContainer.stats.memory_stats.usage /
-                  currentContainer.stats.memory_stats.limit
+                container.stats.memory_stats.usage /
+                  container.stats.memory_stats.limit
               )}
               )
             </p>
             <div>
               <p>Network I/O:</p>
               <ul className="ml-2">
-                {currentContainer.stats.networks &&
-                  Object.entries(currentContainer.stats.networks).map(
+                {container.stats.networks &&
+                  Object.entries(container.stats.networks).map(
                     ([name, stats]) => (
                       <li key={name}>
                         {name}: RX {formatBytes(stats.rx_bytes)}, TX{" "}

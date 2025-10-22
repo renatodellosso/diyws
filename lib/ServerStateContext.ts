@@ -1,12 +1,16 @@
 import { createContext } from "react";
 import { ServerState } from "./types";
 
+export type UpdateServerStateFn = (
+  update: (prev: ServerState) => Partial<ServerState>
+) => void;
+
 const ServerStateContext = createContext<
   ServerState & {
     lastUpdated: Date | undefined;
     pingTimeMs?: number;
     fetch: () => Promise<void>;
-    update: (update: (prev: ServerState) => Partial<ServerState>) => void;
+    update: UpdateServerStateFn;
   }
 >({
   dockerRunning: false,

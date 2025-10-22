@@ -7,6 +7,7 @@ import ContainerCard from "./ContainerCard";
 import ImageCard from "./ImageCard";
 import { ImageInfo } from "dockerode";
 import { throwOnError } from "@/lib/utils";
+import { UpdateServerStateFn } from "@/lib/ServerStateContext";
 
 export default function ServiceCard({
   service,
@@ -17,9 +18,7 @@ export default function ServiceCard({
   service: Service;
   container: ContainerDetails;
   image: ImageInfo;
-  updateServerState: (
-    update: (prev: ServerState) => Partial<ServerState>
-  ) => void;
+  updateServerState: UpdateServerStateFn;
 }) {
   const router = useRouter();
 
@@ -66,7 +65,10 @@ export default function ServiceCard({
           </button>
         </div>
         <p className="font-bold">Container</p>
-        <ContainerCard container={container} />
+        <ContainerCard
+          container={container}
+          updateServerState={updateServerState}
+        />
         <div className="divider my-1" />
         <p className="font-bold">Image</p>
         <ImageCard image={image} />

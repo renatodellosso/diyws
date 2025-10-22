@@ -59,7 +59,11 @@ export default function Dashboard() {
             <p>No containers found.</p>
           ) : (
             serverState.containers.map((container) => (
-              <ContainerCard key={container.Id} container={container} />
+              <ContainerCard
+                key={container.Id}
+                container={container}
+                updateServerState={serverState.update}
+              />
             ))
           )}
         </div>
