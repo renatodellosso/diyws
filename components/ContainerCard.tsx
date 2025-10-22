@@ -1,11 +1,6 @@
 import api from "@/lib/api";
 import { ContainerDetails } from "@/lib/types";
-import {
-  bytesToGb,
-  formatBytes,
-  formatPercent,
-  throwOnError,
-} from "@/lib/utils";
+import { formatBytes, formatPercent, throwOnError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
