@@ -20,6 +20,16 @@ export default function ContainerCard({
   async function toggleContainerState() {
     const newState = !isRunning;
 
+    if (
+      !newState &&
+      currentContainer.Name.includes("diyws") &&
+      !confirm(
+        `WARNING: This container may be the DIYWS interface. If you stop it, you may lose access to the web interface. Are you sure you want to stop container '${containerName}'?`
+      )
+    ) {
+      return;
+    }
+
     setStateUpdating(true);
     const promise = api.containers
       .containerId(container.Id)
