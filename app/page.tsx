@@ -2,6 +2,7 @@
 
 import ContainerCard from "@/components/ContainerCard";
 import ImageCard from "@/components/ImageCard";
+import ResourceUsageCard from "@/components/ResourceUsageCard";
 import ServiceCard from "@/components/ServiceCard";
 import ServerStateContext from "@/lib/ServerStateContext";
 import Link from "next/link";
@@ -48,6 +49,17 @@ export default function Dashboard() {
             ))
           )}
         </div>
+      </div>
+
+      <div className="divider mx-4" />
+
+      <div>
+        <h2 className="text-2xl mb-1">Resource Usage</h2>
+        {serverState.resourceUsage ? (
+          <ResourceUsageCard resourceUsage={serverState.resourceUsage} />
+        ) : (
+          <p>No resource usage data available.</p>
+        )}
       </div>
 
       <div className="divider mx-4" />

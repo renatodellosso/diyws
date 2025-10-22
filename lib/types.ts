@@ -11,6 +11,13 @@ export type ServerState = {
   images: ImageInfo[];
   containers: ContainerDetails[];
   services: Service[];
+  resourceUsage?: ServerResourceUsage;
+};
+
+export type ServerResourceUsage = {
+  cpuPercent: number[];
+  memoryUsageBytes: number;
+  memoryLimitBytes: number;
 };
 
 export type ServiceConfig = {

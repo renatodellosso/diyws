@@ -1,6 +1,10 @@
 import DataService from "@/lib/DataService";
 import dockerService from "@/lib/dockerService";
-import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
+import {
+  errorResponse,
+  getResourceUsage,
+  throwIfUnauthorized,
+} from "@/lib/serverUtils";
 import { populateServices } from "@/lib/serviceUtils";
 import { ServerState } from "@/lib/types";
 import { NextResponse } from "next/server";
@@ -34,6 +38,7 @@ export async function GET() {
       images,
       containers,
       services,
+      resourceUsage: getResourceUsage(),
     };
 
     return NextResponse.json(state);
