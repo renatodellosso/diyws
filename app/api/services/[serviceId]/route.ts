@@ -1,5 +1,6 @@
 import api from "@/lib/api";
 import DataService from "@/lib/DataService";
+import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
 import { deleteService } from "@/lib/serviceUtils";
 
 export async function DELETE(
@@ -7,6 +8,8 @@ export async function DELETE(
   { params }: { params: Promise<{ serviceId: string }> }
 ) {
   try {
+    await throwIfUnauthorized();
+
     const { serviceId } = await params;
 
     const parsed =
@@ -20,7 +23,7 @@ export async function DELETE(
     return new Response(null, { status: 204 });
   } catch (error: any) {
     if (error instanceof Error) {
-      return new Response(error.message, { status: 400 });
+      return errorResponse(error.message, 400);
     }
   }
 }

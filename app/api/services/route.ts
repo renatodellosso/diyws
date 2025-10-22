@@ -1,10 +1,13 @@
 import api from "@/lib/api";
 import DataService from "@/lib/DataService";
+import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
 import { createService, isValidServiceName } from "@/lib/serviceUtils";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
+    await throwIfUnauthorized();
+
     const jsonRaw = await request.json();
 
     const parsed = api.services.create.bodySchema!.safeParse(jsonRaw);
@@ -19,12 +22,7 @@ export async function POST(request: Request) {
     return NextResponse.json(service, { status: 201 });
   } catch (error: any) {
     if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          error: error.message,
-        },
-        { status: 400 }
-      );
+      return errorResponse(error.message, 400);
     }
   }
 }

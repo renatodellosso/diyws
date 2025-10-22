@@ -10,6 +10,7 @@ import api from "@/lib/api";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import Header from "@/components/Header";
 import { throwOnError } from "@/lib/utils";
+import { getSession, signIn } from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,10 +47,18 @@ export default function RootLayout({
     }));
   }
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
-    updateServerState();
-    const interval = setInterval(updateServerState, 5000);
-    return () => clearInterval(interval);
+    getSession().then((session) => {
+      if (!session?.user) {
+        signIn();
+        return;
+      }
+
+      updateServerState();
+      setInterval(updateServerState, 5000);
+    });
   }, []);
 
   return (
