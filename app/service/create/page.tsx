@@ -2,7 +2,7 @@
 
 import api from "@/lib/api";
 import { ServiceConfig } from "@/lib/types";
-import { throwIfError } from "@/lib/utils";
+import { throwOnError } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function CreateServicePage() {
@@ -15,7 +15,7 @@ export default function CreateServicePage() {
       image: fields.get("image") as string,
     };
 
-    const promise = api.services.create(serviceConfig).then(throwIfError);
+    const promise = api.services.create(serviceConfig).then(throwOnError);
 
     toast.promise(promise, {
       loading: `Creating service '${serviceConfig.name}'...`,

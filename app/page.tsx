@@ -12,7 +12,7 @@ export default function Dashboard() {
   const serverState = useContext(ServerStateContext);
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-base-200">
       <h1 className="text-4xl">Dashboard</h1>
 
       <div>
@@ -33,6 +33,16 @@ export default function Dashboard() {
               <ServiceCard
                 key={service.config.name}
                 service={service}
+                container={
+                  serverState.containers.find((c) =>
+                    c.Names.some((name) => name === `/${service.config.name}`)
+                  )!
+                }
+                image={
+                  serverState.images.find((img) =>
+                    img.RepoTags?.includes(service.config.image)
+                  )!
+                }
                 updateServerState={serverState.update}
               />
             ))

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 import Header from "@/components/Header";
+import { throwOnError } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,7 @@ export default function RootLayout({
 
   async function updateServerState() {
     const start = performance.now();
-    const res = await api.serverState.get();
+    const res = await api.serverState.get().then(throwOnError);
     const state = await res.json();
     setServerState(state);
     setLastUpdated(new Date());

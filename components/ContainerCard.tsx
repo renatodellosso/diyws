@@ -1,6 +1,11 @@
 import api from "@/lib/api";
 import { ContainerDetails } from "@/lib/types";
-import { bytesToGb, formatBytes, formatPercent } from "@/lib/utils";
+import {
+  bytesToGb,
+  formatBytes,
+  formatPercent,
+  throwOnError,
+} from "@/lib/utils";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -17,20 +22,7 @@ export default function ContainerCard({
   const containerName =
     currentContainer.Names?.join(", ") || currentContainer.Id;
 
-  async function updateContainerInfo() {
-    const promise = api.containers
-      .containerId(container.Id)
-      .get()
-      .then((res) => res.json())
-      .then((data) => setCurrentContainer(data));
-    toast.promise(promise, {
-      loading: `Updating container '${containerName}' info...`,
-      success: `Container '${containerName}' info updated!`,
-      error: `Failed to update container '${containerName}' info.`,
-    });
-  }
-
-  function toggleContainerState() {
+  async function toggleContainerState() {
     const newState = !isRunning;
 
     setStateUpdating(true);
@@ -39,14 +31,7 @@ export default function ContainerCard({
       .state.update({
         running: newState,
       })
-      .then(async (res) => {
-        const data = await res.json();
-        setCurrentContainer(data);
-      })
-      .catch((err) => {
-        updateContainerInfo();
-        throw err;
-      })
+      .then(throwOnError)
       .finally(() => {
         setStateUpdating(false);
       });
@@ -63,6 +48,10 @@ export default function ContainerCard({
           isRunning ? "stop" : "start"
         } container '${containerName}': ${err.message}`,
     });
+
+    const res = await promise;
+    const data = await res.json();
+    setCurrentContainer(data);
   }
 
   useEffect(() => {

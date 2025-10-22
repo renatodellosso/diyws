@@ -16,7 +16,7 @@ export function formatPercent(decimal: number): string {
   return (decimal * 100).toFixed(2) + "%";
 }
 
-export async function throwIfError<T>(res: Response): Promise<Response> {
+export async function throwOnError(res: Response): Promise<Response> {
   if (res.ok == false) {
     const error = await res.json();
     throw new Error(

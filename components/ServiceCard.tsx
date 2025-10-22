@@ -1,14 +1,22 @@
 import api from "@/lib/api";
-import { ServerState, Service } from "@/lib/types";
+import { ContainerDetails, ServerState, Service } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { FiTrash } from "react-icons/fi";
+import ContainerCard from "./ContainerCard";
+import ImageCard from "./ImageCard";
+import { ImageInfo } from "dockerode";
+import { throwOnError } from "@/lib/utils";
 
 export default function ServiceCard({
   service,
+  container,
+  image,
   updateServerState,
 }: {
   service: Service;
+  container: ContainerDetails;
+  image: ImageInfo;
   updateServerState: (
     update: (prev: ServerState) => Partial<ServerState>
   ) => void;
@@ -24,7 +32,10 @@ export default function ServiceCard({
       return;
     }
 
-    const promise = api.services.serviceId(service.config.name).delete();
+    const promise = api.services
+      .serviceId(service.config.name)
+      .delete()
+      .then(throwOnError);
 
     toast.promise(promise, {
       loading: `Deleting service '${service.config.name}'...`,
@@ -45,7 +56,7 @@ export default function ServiceCard({
   return (
     <div className="card bg-base-100 shadow-sm">
       <div className="card-body">
-        <div className="card-title flex">
+        <div className="card-title text-2xl flex">
           <h3>{service.config.name}</h3>
           <button
             onClick={handleDelete}
@@ -54,21 +65,11 @@ export default function ServiceCard({
             <FiTrash size={20} className="ml-auto hover:text-red-600" />
           </button>
         </div>
-        <p className="mb-1">
-          <span className="font-semibold">Image:</span> {service.config.image}
-        </p>
-        <p className="mb-1">
-          <span className="font-semibold">Container Status:</span>{" "}
-          {service.container
-            ? service.container.State === "running"
-              ? "Running"
-              : "Stopped"
-            : "Not Created"}
-        </p>
-        <p>
-          <span className="font-semibold">Image Info:</span>{" "}
-          {service.image ? "Available" : "Not Available"}
-        </p>
+        <p className="font-bold">Container</p>
+        <ContainerCard container={container} />
+        <div className="divider my-1" />
+        <p className="font-bold">Image</p>
+        <ImageCard image={image} />
       </div>
     </div>
   );
