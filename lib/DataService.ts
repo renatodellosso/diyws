@@ -1,30 +1,62 @@
 import * as fs from "fs/promises";
 import { ServiceConfig } from "./types";
+import { isValidServiceName } from "./serviceUtils";
 
 namespace DataService {
   const FILE_PATH = "./data/";
-  const SERVICES_FILE = FILE_PATH + "services.json";
+  const SERVICES_PATH = FILE_PATH + "services/";
 
-  async function writeServiceList(services: ServiceConfig[]) {
-    await fs.mkdir(FILE_PATH, { recursive: true });
-    await fs.writeFile(
-      SERVICES_FILE,
-      JSON.stringify(services, null, 2),
-      "utf-8"
-    );
+  function getServiceFilePath(name: string) {
+    return SERVICES_PATH + name + ".json";
+  }
+
+  async function writeServiceFile(service: ServiceConfig) {
+    console.log(`Writing service file for: ${service.name}...`);
+
+    const filePath = getServiceFilePath(service.name);
+    await fs.mkdir(SERVICES_PATH, { recursive: true });
+    await fs.writeFile(filePath, JSON.stringify(service, null, 2), "utf-8");
+
+    console.log(`Service file written: ${filePath}`);
+  }
+
+  async function getService(name: string): Promise<ServiceConfig | null> {
+    try {
+      const data = await fs.readFile(getServiceFilePath(name), "utf-8");
+      return JSON.parse(data) as ServiceConfig;
+    } catch (e) {
+      console.error("Error reading service file:", e);
+      return null;
+    }
   }
 
   export async function getServiceList(): Promise<ServiceConfig[]> {
+    console.log("Fetching service list...");
     try {
-      const data = await fs.readFile(SERVICES_FILE, "utf-8");
-      return JSON.parse(data) as ServiceConfig[];
+      const files = await fs.readdir(SERVICES_PATH);
+      const services: ServiceConfig[] = (
+        await Promise.all(
+          files.map((file) => getService(file.replace(".json", "")))
+        )
+      ).filter((service): service is ServiceConfig => service !== null);
+
+      return services;
     } catch (e) {
       console.error("Error reading service list:", e);
       return [];
     }
   }
 
+  /**
+   * Throws if service name is invalid or already in use.
+   */
   export async function createService(config: ServiceConfig) {
+    console.log(`Attempting to create service: ${config.name}`);
+
+    if (!isValidServiceName(config.name)) {
+      throw new Error("Invalid service name.");
+    }
+
     const services = await getServiceList();
 
     if (services.find((s) => s.name === config.name)) {
@@ -33,20 +65,19 @@ namespace DataService {
 
     services.push(config);
 
-    await writeServiceList(services);
+    await writeServiceFile(config);
 
     return config;
   }
 
   export async function deleteService(name: string) {
-    const services = await getServiceList();
-    const filteredServices = services.filter((s) => s.name !== name);
-
-    if (services.length === filteredServices.length) {
+    const filePath = getServiceFilePath(name);
+    try {
+      await fs.unlink(filePath);
+    } catch (e) {
+      console.error("Error deleting service file:", e);
       throw new Error("Service not found");
     }
-
-    await writeServiceList(filteredServices);
   }
 }
 

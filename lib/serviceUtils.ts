@@ -37,13 +37,7 @@ export async function isServiceNameInUse(name: string): Promise<boolean> {
  * Throws if service name is invalid or already in use.
  */
 export async function createService(config: ServiceConfig): Promise<Service> {
-  if (!isValidServiceName(config.name)) {
-    throw new Error("Invalid service name.");
-  }
-
-  if (await isServiceNameInUse(config.name)) {
-    throw new Error("Service name is already in use.");
-  }
+  await DataService.createService(config);
 
   console.log("Creating service with config:", config);
 
@@ -56,8 +50,6 @@ export async function createService(config: ServiceConfig): Promise<Service> {
     config.name
   );
   console.log("Created container:", container.Name);
-
-  DataService.createService(config);
 
   return Promise.resolve({
     config,
