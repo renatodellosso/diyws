@@ -28,10 +28,6 @@ export function populateServices(
   });
 }
 
-export async function isServiceNameInUse(name: string): Promise<boolean> {
-  const services = await DataService.getServiceList();
-  return services.some((service) => service.name === name);
-}
 
 /**
  * Throws if service name is invalid or already in use.

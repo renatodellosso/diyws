@@ -19,7 +19,7 @@ export function formatPercent(decimal: number): string {
 }
 
 export async function throwOnError(res: Response): Promise<Response> {
-  if (res.ok == false) {
+  if (!res.ok || res.status >= 400) {
     const error = await res.json();
     throw new Error(
       error?.error || `API request failed with status ${res.status}`
@@ -34,7 +34,3 @@ export function tagsToName(image: ImageInfo | ImageInspectInfo): string {
   }
   return "<none>:<none>";
 }
-
-export const portSchema = z
-  .string()
-  .regex(/^\d+\/(tcp|udp|sctp)$/) as z.ZodType<ServiceConfig["ports"][number]>;

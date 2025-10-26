@@ -54,7 +54,7 @@ namespace DataService {
 
     const services = await getServiceList();
 
-    if (services.find((s) => s.name === config.name)) {
+    if (await isServiceNameInUse(config.name)) {
       throw new Error("Service with that name already exists");
     }
 
@@ -72,6 +72,16 @@ namespace DataService {
     } catch (e) {
       console.error("Error deleting service file:", e);
       throw new Error("Service not found");
+    }
+  }
+
+  export async function isServiceNameInUse(name: string): Promise<boolean> {
+    const fileName = getServiceFilePath(name);
+    try {
+      await fs.access(fileName);
+      return true;
+    } catch {
+      return false;
     }
   }
 }

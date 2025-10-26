@@ -20,11 +20,17 @@ export type ServerResourceUsage = {
   memoryLimitBytes: number;
 };
 
+export type PortMapping = {
+  containerPort: number;
+  hostPort: number;
+  protocol: "tcp" | "udp" | "sctp";
+};
+
 export type ServiceConfig = {
   name: string;
   image: string;
   env: Record<string, string>;
-  ports: `${number}/${"tcp" | "udp" | "sctp"}`[];
+  ports: PortMapping[];
 };
 
 export type Service = {

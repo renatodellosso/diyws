@@ -1,5 +1,5 @@
 import Docker from "dockerode";
-import { ContainerDetails, ServiceConfig } from "./types";
+import { ContainerDetails, PortMapping, ServiceConfig } from "./types";
 
 class DockerService {
   docker: Docker;
@@ -124,20 +124,21 @@ class DockerService {
     imageName: string,
     containerName: string,
     env: Record<string, string>,
-    ports: ServiceConfig["ports"]
+    ports: PortMapping[]
   ) {
     const container = await this.docker.createContainer({
       Image: imageName,
       name: containerName,
       Env: Object.entries(env).map(([key, value]) => `${key}=${value}`),
       ExposedPorts: ports.reduce((acc, port) => {
-        acc[port] = {};
+        acc[port.hostPort] = {};
         return acc;
       }, {} as Record<string, {}>),
       HostConfig: {
         PortBindings: ports.reduce((acc, port) => {
-          const [portNumber, protocol] = port.split("/");
-          acc[`${portNumber}/${protocol}`] = [{ HostPort: portNumber }];
+          acc[`${port.containerPort}/${port.protocol}`] = [
+            { HostPort: port.hostPort.toString() },
+          ];
           return acc;
         }, {} as Record<string, { HostPort: string }[]>),
       },

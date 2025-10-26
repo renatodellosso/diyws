@@ -11,7 +11,6 @@ import {
 } from "@renatodellosso/typed-api-client/helpers";
 import { ContainerDetails, ServerState, Service, ServiceConfig } from "./types";
 import z from "zod";
-import { portSchema } from "./utils";
 
 const api = {
   serverState: {
@@ -44,14 +43,30 @@ const api = {
         name: z.ZodString;
         image: z.ZodString;
         env: z.ZodRecord<z.ZodString, z.ZodString>;
-        ports: z.ZodArray<z.ZodType<ServiceConfig["ports"][number]>>;
+        ports: z.ZodArray<
+          z.ZodObject<{
+            containerPort: z.ZodNumber;
+            hostPort: z.ZodNumber;
+            protocol: z.ZodEnum<{
+              tcp: "tcp";
+              udp: "udp";
+              sctp: "sctp";
+            }>;
+          }>
+        >;
       }>
     >({
       bodySchema: z.object({
         name: z.string(),
         image: z.string(),
         env: z.record(z.string(), z.string()),
-        ports: z.array(portSchema),
+        ports: z.array(
+          z.object({
+            containerPort: z.number(),
+            hostPort: z.number(),
+            protocol: z.enum(["tcp", "udp", "sctp"]),
+          })
+        ),
       }),
     }),
     serviceId: dynamicRoute(z.string()).with({
