@@ -11,8 +11,6 @@ namespace DataService {
   }
 
   async function writeServiceFile(service: ServiceConfig) {
-    console.log(`Writing service file for: ${service.name}...`);
-
     const filePath = getServiceFilePath(service.name);
     await fs.mkdir(SERVICES_PATH, { recursive: true });
     await fs.writeFile(filePath, JSON.stringify(service, null, 2), "utf-8");
@@ -31,7 +29,6 @@ namespace DataService {
   }
 
   export async function getServiceList(): Promise<ServiceConfig[]> {
-    console.log("Fetching service list...");
     try {
       const files = await fs.readdir(SERVICES_PATH);
       const services: ServiceConfig[] = (
@@ -51,8 +48,6 @@ namespace DataService {
    * Throws if service name is invalid or already in use.
    */
   export async function createService(config: ServiceConfig) {
-    console.log(`Attempting to create service: ${config.name}`);
-
     if (!isValidServiceName(config.name)) {
       throw new Error("Invalid service name.");
     }
