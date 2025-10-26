@@ -2,7 +2,7 @@
 
 import api from "@/lib/api";
 import { ServiceConfig } from "@/lib/types";
-import { throwOnError } from "@/lib/utils";
+import { portSchema, throwOnError } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function CreateServicePage() {
@@ -13,7 +13,24 @@ export default function CreateServicePage() {
     const serviceConfig: ServiceConfig = {
       name: fields.get("name") as string,
       image: fields.get("image") as string,
+      env: Object.fromEntries(
+        (fields.get("env") as string)
+          .split("\n")
+          .map((line) => line.split("="))
+          .filter(([key, value]) => key && value)
+      ),
+      ports: (fields.get("ports") as string)
+        .split("\n")
+        .map((port) => port.trim())
+        .filter((port) => port) as ServiceConfig["ports"],
     };
+
+    for (const port of serviceConfig.ports) {
+      if (!portSchema.safeParse(port).success) {
+        toast.error(`Invalid port format: ${port}`);
+        return;
+      }
+    }
 
     const promise = api.services.create(serviceConfig).then(throwOnError);
 
@@ -51,6 +68,24 @@ export default function CreateServicePage() {
             className="input"
             placeholder="Image"
             required
+          />
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="legend">Environment Variables</legend>
+          <textarea
+            name="env"
+            className="input min-h-36"
+            placeholder="KEY=value"
+          />
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="legend">Ports</legend>
+          <textarea
+            name="ports"
+            className="input min-h-24"
+            placeholder="8080/tcp"
           />
         </fieldset>
 

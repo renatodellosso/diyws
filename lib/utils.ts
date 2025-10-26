@@ -1,4 +1,6 @@
 import { ImageInfo, ImageInspectInfo } from "dockerode";
+import z from "zod";
+import { ServiceConfig } from "./types";
 
 export function bytesToGb(bytes: number): number {
   return bytes / (1024 * 1024 * 1024);
@@ -32,3 +34,7 @@ export function tagsToName(image: ImageInfo | ImageInspectInfo): string {
   }
   return "<none>:<none>";
 }
+
+export const portSchema = z
+  .string()
+  .regex(/^\d+\/(tcp|udp|sctp)$/) as z.ZodType<ServiceConfig["ports"][number]>;

@@ -9,8 +9,9 @@ import {
   PATCH,
   POST,
 } from "@renatodellosso/typed-api-client/helpers";
-import { ContainerDetails, ServerState, Service } from "./types";
+import { ContainerDetails, ServerState, Service, ServiceConfig } from "./types";
 import z from "zod";
+import { portSchema } from "./utils";
 
 const api = {
   serverState: {
@@ -39,11 +40,18 @@ const api = {
       | {
           error: string;
         },
-      z.ZodObject<{ name: z.ZodString; image: z.ZodString }>
+      z.ZodObject<{
+        name: z.ZodString;
+        image: z.ZodString;
+        env: z.ZodRecord<z.ZodString, z.ZodString>;
+        ports: z.ZodArray<z.ZodType<ServiceConfig["ports"][number]>>;
+      }>
     >({
       bodySchema: z.object({
         name: z.string(),
         image: z.string(),
+        env: z.record(z.string(), z.string()),
+        ports: z.array(portSchema),
       }),
     }),
     serviceId: dynamicRoute(z.string()).with({

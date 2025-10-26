@@ -37,6 +37,11 @@ export async function isServiceNameInUse(name: string): Promise<boolean> {
  * Throws if service name is invalid or already in use.
  */
 export async function createService(config: ServiceConfig): Promise<Service> {
+  // Add :latest tag to image if not present
+  if (!config.image.includes(":")) {
+    config.image += ":latest";
+  }
+
   console.log("Creating service with config:", config);
 
   await DataService.createService(config);
@@ -45,7 +50,9 @@ export async function createService(config: ServiceConfig): Promise<Service> {
 
   const container = await dockerService.createContainer(
     tagsToName(image),
-    config.name
+    config.name,
+    config.env,
+    config.ports
   );
 
   console.log(`Created service '${config.name}' successfully!`);

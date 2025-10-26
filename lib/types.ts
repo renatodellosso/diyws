@@ -23,6 +23,8 @@ export type ServerResourceUsage = {
 export type ServiceConfig = {
   name: string;
   image: string;
+  env: Record<string, string>;
+  ports: `${number}/${"tcp" | "udp" | "sctp"}`[];
 };
 
 export type Service = {

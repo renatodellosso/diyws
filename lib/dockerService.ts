@@ -1,5 +1,5 @@
 import Docker from "dockerode";
-import { ContainerDetails } from "./types";
+import { ContainerDetails, ServiceConfig } from "./types";
 
 class DockerService {
   docker: Docker;
@@ -120,10 +120,27 @@ class DockerService {
     return this.docker.getImage(imageName).inspect();
   }
 
-  async createContainer(imageName: string, containerName: string) {
+  async createContainer(
+    imageName: string,
+    containerName: string,
+    env: Record<string, string>,
+    ports: ServiceConfig["ports"]
+  ) {
     const container = await this.docker.createContainer({
       Image: imageName,
       name: containerName,
+      Env: Object.entries(env).map(([key, value]) => `${key}=${value}`),
+      ExposedPorts: ports.reduce((acc, port) => {
+        acc[port] = {};
+        return acc;
+      }, {} as Record<string, {}>),
+      HostConfig: {
+        PortBindings: ports.reduce((acc, port) => {
+          const [portNumber, protocol] = port.split("/");
+          acc[`${portNumber}/${protocol}`] = [{ HostPort: portNumber }];
+          return acc;
+        }, {} as Record<string, { HostPort: string }[]>),
+      },
     });
 
     console.log(`Created container: ${containerName}`);
