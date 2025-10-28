@@ -5,6 +5,7 @@ import { formatBytes, formatPercent, throwOnError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import NotFoundCard from "./NotFoundCard";
+import { FiArrowRight } from "react-icons/fi";
 
 export default function ContainerCard({
   container,
@@ -122,6 +123,37 @@ export default function ContainerCard({
             </div>
           </>
         )}
+        <div>
+          <h4 className="font-bold">Mount Points:</h4>
+          {container.Mounts.length === 0 ? (
+            <p>None</p>
+          ) : (
+            <table>
+              <thead>
+                <tr className="text-left">
+                  <th>Source</th>
+                  <th>Destination</th>
+                  <th>Type</th>
+                  <th>Mode</th>
+                </tr>
+              </thead>
+              <tbody>
+                {container.Mounts.sort((a, b) =>
+                  a.Destination.localeCompare(b.Destination)
+                ).map((mount) => (
+                  <tr key={mount.Destination}>
+                    <td className="pr-4">{mount.Source || "(empty)"}</td>
+                    <td className="pr-4">{mount.Destination}</td>
+                    <td className="pr-4">{mount.Type}</td>
+                    <td className="pr-4">
+                      {mount.RW ? "read-write" : "read-only"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );

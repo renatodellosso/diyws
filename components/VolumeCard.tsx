@@ -1,7 +1,13 @@
-import { VolumeInspectInfo } from "dockerode";
+import { ContainerInfo, VolumeInspectInfo } from "dockerode";
 import NotFoundCard from "./NotFoundCard";
 
-export default function VolumeCard({ volume }: { volume: VolumeInspectInfo }) {
+export default function VolumeCard({
+  volume,
+  mount,
+}: {
+  volume: VolumeInspectInfo;
+  mount?: ContainerInfo["Mounts"][number];
+}) {
   if (!volume) {
     return <NotFoundCard noun="Volume" />;
   }
@@ -9,9 +15,13 @@ export default function VolumeCard({ volume }: { volume: VolumeInspectInfo }) {
   return (
     <div className="card bg-base-100 shadow-sm">
       <div className="card-body">
-        <h3 className="card-title">{volume.Name}</h3>
-        {volume.Labels && Object.keys(volume.Labels).length > 0 && (
-          <h4>{Object.values(volume.Labels).join(", ")}</h4>
+        <h3 className="card-title">{mount?.Destination ?? volume.Name}</h3>
+        {mount && (
+          <>
+            <p>Name: {volume.Name}</p>
+            <p>Type: {mount.Type}</p>
+            <p>Source: {mount.Source === "" ? "(empty)" : mount.Source}</p>
+          </>
         )}
         <p>Mountpoint: {volume.Mountpoint}</p>
       </div>

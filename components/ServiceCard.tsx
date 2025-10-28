@@ -5,9 +5,10 @@ import { toast } from "react-hot-toast";
 import { FiTrash } from "react-icons/fi";
 import ContainerCard from "./ContainerCard";
 import ImageCard from "./ImageCard";
-import { ImageInfo } from "dockerode";
+import { ImageInfo, Volume } from "dockerode";
 import { throwOnError } from "@/lib/utils";
 import { UpdateServerStateFn } from "@/lib/ServerStateContext";
+import VolumeCard from "./VolumeCard";
 
 export default function ServiceCard({
   service,
@@ -74,14 +75,34 @@ export default function ServiceCard({
             <FiTrash size={20} className="ml-auto hover:text-red-600" />
           </button>
         </div>
+
         <p className="font-bold">Container</p>
         <ContainerCard
           container={container}
           updateServerState={updateServerState}
         />
+
         <div className="divider my-1" />
         <p className="font-bold">Image</p>
         <ImageCard image={image} />
+
+        <div className="divider my-1" />
+        <p className="font-bold">Volumes & Mounts</p>
+        {!service.volumes || service.volumes.length === 0 ? (
+          <p>No volumes mounted.</p>
+        ) : (
+          service.volumes
+            ?.sort((a, b) => a.Name.localeCompare(b.Name))
+            .map((vol) => (
+              <VolumeCard
+                key={vol.Name}
+                volume={vol}
+                mount={service.container?.Mounts.find(
+                  (mount) => mount.Name === vol.Name
+                )}
+              />
+            ))
+        )}
       </div>
     </div>
   );

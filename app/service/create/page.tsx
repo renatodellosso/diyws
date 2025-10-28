@@ -1,7 +1,7 @@
 "use client";
 
 import api from "@/lib/api";
-import { PortMapping, ServiceConfig } from "@/lib/types";
+import { PortMapping, ServiceConfig, VolumeConfig } from "@/lib/types";
 import { throwOnError } from "@/lib/utils";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -13,6 +13,7 @@ export default function CreateServicePage() {
   const [image, setImage] = useState("");
   const [env, setEnv] = useState("");
   const [ports, setPorts] = useState<PortMapping[]>([]);
+  const [volumes, setVolumes] = useState<VolumeConfig[]>([]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -42,6 +43,7 @@ export default function CreateServicePage() {
           .filter(([key, value]) => key && value)
       ),
       ports,
+      volumes,
     };
 
     const promise = api.services
@@ -175,6 +177,57 @@ export default function CreateServicePage() {
             className="btn btn-secondary"
           >
             Add Port
+          </button>
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="legend">Volumes</legend>
+          {volumes.map((volume, index) => (
+            <div key={index} className="flex gap-2 mb-2">
+              <input
+                value={volume.volumeName || ""}
+                onChange={(e) => {
+                  const newVolumes = [...volumes];
+                  newVolumes[index].volumeName = e.target.value;
+                  setVolumes(newVolumes);
+                }}
+                className="input"
+                placeholder="Volume Name"
+              />
+              <input
+                value={volume.containerDestination || ""}
+                onChange={(e) => {
+                  const newVolumes = [...volumes];
+                  newVolumes[index].containerDestination = e.target.value;
+                  setVolumes(newVolumes);
+                }}
+                className="input"
+                placeholder="Container Destination"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const newVolumes = [...volumes];
+                  newVolumes.splice(index, 1);
+                  setVolumes(newVolumes);
+                }}
+                className="btn btn-danger"
+              >
+                <FiTrash />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              setVolumes([
+                ...volumes,
+                { volumeName: "", containerDestination: "" },
+              ])
+            }
+            className="btn btn-secondary"
+          >
+            Add Volume
           </button>
         </fieldset>
 

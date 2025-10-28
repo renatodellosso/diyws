@@ -1,4 +1,4 @@
-import { ImageInfo, ImageInspectInfo } from "dockerode";
+import { ImageInfo, ImageInspectInfo, VolumeInspectInfo } from "dockerode";
 import { ServiceConfig, Service, ContainerDetails } from "./types";
 import dockerService from "./dockerService";
 import DataService from "./DataService";
@@ -12,7 +12,8 @@ export function isValidServiceName(name: string): boolean {
 export function populateServices(
   services: ServiceConfig[],
   containers: ContainerDetails[],
-  images: (ImageInfo | ImageInspectInfo)[]
+  images: (ImageInfo | ImageInspectInfo)[],
+  volumes: VolumeInspectInfo[]
 ): Service[] {
   return services.map((config) => {
     const container = containers.find((c) =>
@@ -20,14 +21,20 @@ export function populateServices(
     );
     const image = images.find((img) => img.RepoTags?.includes(config.image));
 
+    const targetVolumeNames =
+      container?.Mounts.map((mount) => mount.Name) || [];
+    const filteredVolumes = volumes.filter((vol) =>
+      targetVolumeNames.includes(vol.Name)
+    );
+
     return {
       config,
       container,
       image,
+      volumes: filteredVolumes,
     };
   });
 }
-
 
 /**
  * Throws if service name is invalid or already in use.
@@ -44,11 +51,16 @@ export async function createService(config: ServiceConfig): Promise<Service> {
 
   const image = await dockerService.createImage(config.image);
 
+  const volumePromise = (await Promise.all(
+    config.volumes.map((vol) => dockerService.createVolume(vol.volumeName))
+  )) as VolumeInspectInfo[];
+
   const container = await dockerService.createContainer(
     tagsToName(image),
     config.name,
     config.env,
-    config.ports
+    config.ports,
+    config.volumes
   );
 
   console.log(`Created service '${config.name}' successfully!`);
@@ -56,6 +68,7 @@ export async function createService(config: ServiceConfig): Promise<Service> {
     config,
     container: container!,
     image: image!,
+    volumes: volumePromise,
   };
 }
 

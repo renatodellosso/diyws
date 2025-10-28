@@ -1,8 +1,6 @@
 import api from "@/lib/api";
-import DataService from "@/lib/DataService";
 import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
-import { createService, isValidServiceName } from "@/lib/serviceUtils";
-import { ServiceConfig } from "@/lib/types";
+import { createService } from "@/lib/serviceUtils";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {

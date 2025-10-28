@@ -4,7 +4,6 @@ import {
   ContainerStats,
   ImageInfo,
   ImageInspectInfo,
-  Volume,
   VolumeInspectInfo,
 } from "dockerode";
 
@@ -29,17 +28,24 @@ export type PortMapping = {
   protocol: "tcp" | "udp" | "sctp";
 };
 
+export type VolumeConfig = {
+  volumeName: string;
+  containerDestination: string;
+};
+
 export type ServiceConfig = {
   name: string;
   image: string;
   env: Record<string, string>;
   ports: PortMapping[];
+  volumes: VolumeConfig[];
 };
 
 export type Service = {
   config: ServiceConfig;
   container?: ContainerInfo | ContainerInspectInfo;
   image?: ImageInfo | ImageInspectInfo;
+  volumes?: VolumeInspectInfo[];
 };
 
 export type ContainerDetails = Omit<

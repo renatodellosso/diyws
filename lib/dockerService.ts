@@ -1,5 +1,10 @@
 import Docker from "dockerode";
-import { ContainerDetails, PortMapping, ServiceConfig } from "./types";
+import {
+  ContainerDetails,
+  PortMapping,
+  ServiceConfig,
+  VolumeConfig,
+} from "./types";
 
 class DockerService {
   docker: Docker;
@@ -124,7 +129,8 @@ class DockerService {
     imageName: string,
     containerName: string,
     env: Record<string, string>,
-    ports: PortMapping[]
+    ports: PortMapping[],
+    volumes: VolumeConfig[]
   ) {
     const container = await this.docker.createContainer({
       Image: imageName,
@@ -141,6 +147,9 @@ class DockerService {
           ];
           return acc;
         }, {} as Record<string, { HostPort: string }[]>),
+        Binds: volumes.map(
+          (vol) => `${vol.volumeName}:${vol.containerDestination}`
+        ),
       },
     });
 
@@ -154,6 +163,25 @@ class DockerService {
       .then((res) => res.Volumes || []);
 
     return volumes;
+  }
+
+  /**
+   * Does nothing if the volume already exists
+   */
+  async createVolume(volumeName: string) {
+    const existing = await this.docker
+      .getVolume(volumeName)
+      .inspect()
+      .catch(() => null);
+
+    if (existing) {
+      console.log(`Volume ${volumeName} already exists.`);
+      return existing;
+    }
+
+    const volume = await this.docker.createVolume({ Name: volumeName });
+    console.log(`Created volume: ${volumeName}`);
+    return volume;
   }
 }
 

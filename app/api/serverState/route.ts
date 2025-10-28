@@ -33,7 +33,7 @@ export async function GET() {
     ]);
 
     const serviceConfigs = await DataService.getServiceList();
-    const services = populateServices(serviceConfigs, containers, images);
+    const services = populateServices(serviceConfigs, containers, images, volumes);
 
     const state: ServerState = {
       dockerRunning: true,

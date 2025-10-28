@@ -54,6 +54,12 @@ const api = {
             }>;
           }>
         >;
+        volumes: z.ZodArray<
+          z.ZodObject<{
+            volumeName: z.ZodString;
+            containerDestination: z.ZodString;
+          }>
+        >;
       }>
     >({
       bodySchema: z.object({
@@ -65,6 +71,12 @@ const api = {
             containerPort: z.number(),
             hostPort: z.number(),
             protocol: z.enum(["tcp", "udp", "sctp"]),
+          })
+        ),
+        volumes: z.array(
+          z.object({
+            volumeName: z.string(),
+            containerDestination: z.string(),
           })
         ),
       }),

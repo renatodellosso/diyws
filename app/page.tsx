@@ -105,9 +105,9 @@ export default function Dashboard() {
           {serverState.volumes.length === 0 ? (
             <p>No volumes found.</p>
           ) : (
-            serverState.volumes.map((volume) => (
-              <VolumeCard key={volume.Name} volume={volume} />
-            ))
+            serverState.volumes
+              .sort((a, b) => a.Name.localeCompare(b.Name))
+              .map((volume) => <VolumeCard key={volume.Name} volume={volume} />)
           )}
         </div>
       </div>
