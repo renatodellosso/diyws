@@ -4,6 +4,7 @@ import ContainerCard from "@/components/ContainerCard";
 import ImageCard from "@/components/ImageCard";
 import ResourceUsageCard from "@/components/ResourceUsageCard";
 import ServiceCard from "@/components/ServiceCard";
+import VolumeCard from "@/components/VolumeCard";
 import ServerStateContext from "@/lib/ServerStateContext";
 import Link from "next/link";
 import { useContext } from "react";
@@ -91,6 +92,21 @@ export default function Dashboard() {
           ) : (
             serverState.images.map((image) => (
               <ImageCard key={image.Id} image={image} />
+            ))
+          )}
+        </div>
+      </div>
+
+      <div className="divider mx-4" />
+
+      <div>
+        <h2 className="text-2xl mb-1">Volumes</h2>
+        <div className="flex flex-col gap-2">
+          {serverState.volumes.length === 0 ? (
+            <p>No volumes found.</p>
+          ) : (
+            serverState.volumes.map((volume) => (
+              <VolumeCard key={volume.Name} volume={volume} />
             ))
           )}
         </div>

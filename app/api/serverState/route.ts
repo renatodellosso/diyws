@@ -20,14 +20,16 @@ export async function GET() {
         dockerRunning: false,
         images: [],
         containers: [],
+        volumes: [],
         services: [],
       };
       return NextResponse.json(state);
     }
 
-    const [images, containers] = await Promise.all([
+    const [images, containers, volumes] = await Promise.all([
       dockerService.getImages(),
       dockerService.getContainers(),
+      dockerService.getVolumes(),
     ]);
 
     const serviceConfigs = await DataService.getServiceList();
@@ -37,6 +39,7 @@ export async function GET() {
       dockerRunning: true,
       images,
       containers,
+      volumes,
       services,
       resourceUsage: getResourceUsage(),
     };

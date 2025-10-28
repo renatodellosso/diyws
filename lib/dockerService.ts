@@ -147,6 +147,14 @@ class DockerService {
     console.log(`Created container: ${containerName}`);
     return container.inspect();
   }
+
+  async getVolumes() {
+    const volumes = await this.docker
+      .listVolumes()
+      .then((res) => res.Volumes || []);
+
+    return volumes;
+  }
 }
 
 export default new DockerService();

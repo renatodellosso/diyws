@@ -4,12 +4,15 @@ import {
   ContainerStats,
   ImageInfo,
   ImageInspectInfo,
+  Volume,
+  VolumeInspectInfo,
 } from "dockerode";
 
 export type ServerState = {
   dockerRunning: boolean;
   images: ImageInfo[];
   containers: ContainerDetails[];
+  volumes: VolumeInspectInfo[];
   services: Service[];
   resourceUsage?: ServerResourceUsage;
 };
