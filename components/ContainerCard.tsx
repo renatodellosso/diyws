@@ -1,11 +1,11 @@
-import api from "@/lib/api";
-import { UpdateServerStateFn } from "@/lib/ServerStateContext";
-import { ContainerDetails } from "@/lib/types";
-import { formatBytes, formatPercent, throwOnError } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import NotFoundCard from "./NotFoundCard";
-import { FiArrowRight } from "react-icons/fi";
+import api from '@/lib/api';
+import { UpdateServerStateFn } from '@/lib/ServerStateContext';
+import { ContainerDetails } from '@/lib/types';
+import { formatBytes, formatPercent, throwOnError } from '@/lib/utils';
+import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import NotFoundCard from './NotFoundCard';
+import { FiArrowRight } from 'react-icons/fi';
 
 export default function ContainerCard({
   container,
@@ -16,8 +16,8 @@ export default function ContainerCard({
 }) {
   const [stateUpdating, setStateUpdating] = useState(false);
 
-  const isRunning = container?.State === "running";
-  const containerName = container?.Names?.join(", ") || container?.Id;
+  const isRunning = container?.State === 'running';
+  const containerName = container?.Names?.join(', ') || container?.Id;
 
   const setCurrentContainer = useCallback(
     (updatedContainer: ContainerDetails) => {
@@ -35,7 +35,7 @@ export default function ContainerCard({
 
     if (
       !newState &&
-      container.Name.includes("diyws") &&
+      container.Name.includes('diyws') &&
       !confirm(
         `WARNING: This container may be the DIYWS interface. If you stop it, you may lose access to the web interface. Are you sure you want to stop container '${containerName}'?`
       )
@@ -63,7 +63,7 @@ export default function ContainerCard({
         : `Container '${containerName}' started successfully!`,
       error: (err) =>
         `Failed to ${
-          isRunning ? "stop" : "start"
+          isRunning ? 'stop' : 'start'
         } container '${containerName}': ${err.message}`,
     });
 
@@ -87,13 +87,13 @@ export default function ContainerCard({
           <h3>{containerName}</h3>
           <span
             className={
-              isRunning ? "badge badge-success ml-2" : "badge badge-error ml-2"
+              isRunning ? 'badge badge-success ml-2' : 'badge badge-error ml-2'
             }
           >
             {container.State}
           </span>
           <button className="btn btn-sm" onClick={toggleContainerState}>
-            {stateUpdating ? "Updating..." : isRunning ? "Stop" : "Start"}
+            {stateUpdating ? 'Updating...' : isRunning ? 'Stop' : 'Start'}
           </button>
         </div>
         <p>ID: {container.Id}</p>
@@ -102,7 +102,7 @@ export default function ContainerCard({
         {isRunning && container.stats && (
           <>
             <p>
-              Memory Usage: {formatBytes(container.stats.memory_stats.usage)} /{" "}
+              Memory Usage: {formatBytes(container.stats.memory_stats.usage)} /{' '}
               {formatBytes(container.stats.memory_stats.limit)} (
               {formatPercent(
                 container.stats.memory_stats.usage /
@@ -117,7 +117,7 @@ export default function ContainerCard({
                   Object.entries(container.stats.networks).map(
                     ([name, stats]) => (
                       <li key={name}>
-                        {name}: RX {formatBytes(stats.rx_bytes)}, TX{" "}
+                        {name}: RX {formatBytes(stats.rx_bytes)}, TX{' '}
                         {formatBytes(stats.tx_bytes)}
                       </li>
                     )
@@ -145,11 +145,11 @@ export default function ContainerCard({
                   a.Destination.localeCompare(b.Destination)
                 ).map((mount) => (
                   <tr key={mount.Destination}>
-                    <td className="pr-4">{mount.Source || "(empty)"}</td>
+                    <td className="pr-4">{mount.Source || '(empty)'}</td>
                     <td className="pr-4">{mount.Destination}</td>
                     <td className="pr-4">{mount.Type}</td>
                     <td className="pr-4">
-                      {mount.RW ? "read-write" : "read-only"}
+                      {mount.RW ? 'read-write' : 'read-only'}
                     </td>
                   </tr>
                 ))}

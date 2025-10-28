@@ -1,4 +1,4 @@
-import { FiWifiOff } from "react-icons/fi";
+import { FiWifiOff } from 'react-icons/fi';
 
 export default function DockerOfflineScreen() {
   return (

@@ -1,4 +1,4 @@
-import { FiAlertOctagon } from "react-icons/fi";
+import { FiAlertOctagon } from 'react-icons/fi';
 
 export default function NotFoundCard({ noun }: { noun: string }) {
   return (

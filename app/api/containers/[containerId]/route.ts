@@ -1,7 +1,7 @@
-import api from "@/lib/api";
-import dockerService from "@/lib/dockerService";
-import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
-import { NextResponse } from "next/server";
+import api from '@/lib/api';
+import dockerService from '@/lib/dockerService';
+import { errorResponse, throwIfUnauthorized } from '@/lib/serverUtils';
+import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
@@ -15,19 +15,19 @@ export async function GET(
       api.containers.containerId.dynamicRouteSchema.safeParse(rawId);
 
     if (!parsedContainerId.success) {
-      return new Response("Invalid container ID", { status: 400 });
+      return new Response('Invalid container ID', { status: 400 });
     }
 
     const containerId = parsedContainerId.data;
 
     const containerInfo = await dockerService.getContainerInfo(containerId);
     if (!containerInfo) {
-      return new Response("Container not found", { status: 404 });
+      return new Response('Container not found', { status: 404 });
     }
 
     return new Response(JSON.stringify(containerInfo), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error: any) {
     if (error instanceof Error) {

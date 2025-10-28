@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import api from "@/lib/api";
-import { PortMapping, ServiceConfig, VolumeConfig } from "@/lib/types";
-import { throwOnError } from "@/lib/utils";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { FiTrash } from "react-icons/fi";
-import { set } from "zod";
+import api from '@/lib/api';
+import { PortMapping, ServiceConfig, VolumeConfig } from '@/lib/types';
+import { throwOnError } from '@/lib/utils';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { FiTrash } from 'react-icons/fi';
+import { set } from 'zod';
 
 export default function CreateServicePage() {
-  const [name, setName] = useState("");
-  const [image, setImage] = useState("");
-  const [env, setEnv] = useState("");
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [env, setEnv] = useState('');
   const [ports, setPorts] = useState<PortMapping[]>([]);
   const [volumes, setVolumes] = useState<VolumeConfig[]>([]);
 
@@ -38,8 +38,8 @@ export default function CreateServicePage() {
       image,
       env: Object.fromEntries(
         env
-          .split("\n")
-          .map((line) => line.split("="))
+          .split('\n')
+          .map((line) => line.split('='))
           .filter(([key, value]) => key && value)
       ),
       ports,
@@ -62,7 +62,7 @@ export default function CreateServicePage() {
     });
 
     await promise;
-    location.href = "/";
+    location.href = '/';
   }
 
   function updatePort(index: number, field: keyof PortMapping, value: string) {
@@ -124,16 +124,16 @@ export default function CreateServicePage() {
           {ports.map((port, index) => (
             <div key={index} className="flex gap-2 mb-2">
               <input
-                value={port.containerPort || ""}
+                value={port.containerPort || ''}
                 onChange={(e) =>
-                  updatePort(index, "containerPort", e.target.value)
+                  updatePort(index, 'containerPort', e.target.value)
                 }
                 className="input"
                 placeholder="Container Port"
               />
               <input
-                value={port.hostPort || ""}
-                onChange={(e) => updatePort(index, "hostPort", e.target.value)}
+                value={port.hostPort || ''}
+                onChange={(e) => updatePort(index, 'hostPort', e.target.value)}
                 className="input"
                 placeholder="Host Port"
               />
@@ -142,9 +142,9 @@ export default function CreateServicePage() {
                 onChange={(e) => {
                   const newPorts = [...ports];
                   newPorts[index].protocol = e.target.value as
-                    | "tcp"
-                    | "udp"
-                    | "sctp";
+                    | 'tcp'
+                    | 'udp'
+                    | 'sctp';
                   setPorts(newPorts);
                 }}
                 className="select"
@@ -171,7 +171,7 @@ export default function CreateServicePage() {
             onClick={() =>
               setPorts([
                 ...ports,
-                { containerPort: 0, hostPort: 0, protocol: "tcp" },
+                { containerPort: 0, hostPort: 0, protocol: 'tcp' },
               ])
             }
             className="btn btn-secondary"
@@ -185,7 +185,7 @@ export default function CreateServicePage() {
           {volumes.map((volume, index) => (
             <div key={index} className="flex gap-2 mb-2">
               <input
-                value={volume.volumeName || ""}
+                value={volume.volumeName || ''}
                 onChange={(e) => {
                   const newVolumes = [...volumes];
                   newVolumes[index].volumeName = e.target.value;
@@ -195,7 +195,7 @@ export default function CreateServicePage() {
                 placeholder="Volume Name"
               />
               <input
-                value={volume.containerDestination || ""}
+                value={volume.containerDestination || ''}
                 onChange={(e) => {
                   const newVolumes = [...volumes];
                   newVolumes[index].containerDestination = e.target.value;
@@ -222,7 +222,7 @@ export default function CreateServicePage() {
             onClick={() =>
               setVolumes([
                 ...volumes,
-                { volumeName: "", containerDestination: "" },
+                { volumeName: '', containerDestination: '' },
               ])
             }
             className="btn btn-secondary"

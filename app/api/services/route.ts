@@ -1,7 +1,7 @@
-import api from "@/lib/api";
-import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
-import { createService } from "@/lib/serviceUtils";
-import { NextResponse } from "next/server";
+import api from '@/lib/api';
+import { errorResponse, throwIfUnauthorized } from '@/lib/serverUtils';
+import { createService } from '@/lib/serviceUtils';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     const service = await createService(parsed.data);
 
-    console.log("Created service:", service.config);
+    console.log('Created service:', service.config);
 
     return NextResponse.json(service, { status: 201 });
   } catch (error: any) {

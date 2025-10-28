@@ -1,14 +1,14 @@
-import api from "@/lib/api";
-import { ContainerDetails, ServerState, Service } from "@/lib/types";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
-import { FiTrash } from "react-icons/fi";
-import ContainerCard from "./ContainerCard";
-import ImageCard from "./ImageCard";
-import { ImageInfo, Volume } from "dockerode";
-import { throwOnError } from "@/lib/utils";
-import { UpdateServerStateFn } from "@/lib/ServerStateContext";
-import VolumeCard from "./VolumeCard";
+import api from '@/lib/api';
+import { ContainerDetails, ServerState, Service } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+import { FiTrash } from 'react-icons/fi';
+import ContainerCard from './ContainerCard';
+import ImageCard from './ImageCard';
+import { ImageInfo, Volume } from 'dockerode';
+import { throwOnError } from '@/lib/utils';
+import { UpdateServerStateFn } from '@/lib/ServerStateContext';
+import VolumeCard from './VolumeCard';
 
 export default function ServiceCard({
   service,
@@ -53,7 +53,7 @@ export default function ServiceCard({
     }));
   }
 
-  const online = container?.State === "running";
+  const online = container?.State === 'running';
 
   return (
     <div className="card bg-base-100 shadow-sm">

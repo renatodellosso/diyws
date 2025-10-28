@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { ServerState } from "./types";
+import { createContext } from 'react';
+import { ServerState } from './types';
 
 export type UpdateServerStateFn = (
   update: (prev: ServerState) => Partial<ServerState>

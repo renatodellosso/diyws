@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "react-hot-toast";
-import ServerStateContext from "@/lib/ServerStateContext";
-import { ServerState } from "@/lib/types";
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-import LoadingScreen from "@/components/screens/LoadingScreen";
-import Header from "@/components/Header";
-import { throwOnError } from "@/lib/utils";
-import { getSession, signIn } from "next-auth/react";
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import { Toaster } from 'react-hot-toast';
+import ServerStateContext from '@/lib/ServerStateContext';
+import { ServerState } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import api from '@/lib/api';
+import LoadingScreen from '@/components/screens/LoadingScreen';
+import Header from '@/components/Header';
+import { throwOnError } from '@/lib/utils';
+import { getSession, signIn } from 'next-auth/react';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export default function RootLayout({
