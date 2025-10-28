@@ -87,6 +87,9 @@ const api = {
   },
 } satisfies ApiSchema;
 
-initApiClient(api, process.env.NEXT_PUBLIC_BASE_URL);
+initApiClient(
+  api,
+  typeof location !== "undefined" ? `${location.origin}/api` : ""
+);
 
 export default api;

@@ -16,6 +16,7 @@ const ServerStateContext = createContext<
   dockerRunning: false,
   images: [],
   containers: [],
+  volumes: [],
   services: [],
   lastUpdated: undefined,
   fetch: async () => {},

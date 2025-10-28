@@ -14,7 +14,7 @@ export default function Dashboard() {
   const serverState = useContext(ServerStateContext);
 
   return (
-    <div className="p-4 bg-base-200">
+    <div className="p-4">
       <h1 className="text-4xl">Dashboard</h1>
 
       <div>

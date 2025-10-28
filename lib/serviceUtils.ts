@@ -49,27 +49,34 @@ export async function createService(config: ServiceConfig): Promise<Service> {
 
   await DataService.createService(config);
 
-  const image = await dockerService.createImage(config.image);
+  try {
+    const image = await dockerService.createImage(config.image);
 
-  const volumePromise = (await Promise.all(
-    config.volumes.map((vol) => dockerService.createVolume(vol.volumeName))
-  )) as VolumeInspectInfo[];
+    const volumePromise = (await Promise.all(
+      config.volumes.map((vol) => dockerService.createVolume(vol.volumeName))
+    )) as VolumeInspectInfo[];
 
-  const container = await dockerService.createContainer(
-    tagsToName(image),
-    config.name,
-    config.env,
-    config.ports,
-    config.volumes
-  );
+    const container = await dockerService.createContainer(
+      tagsToName(image),
+      config.name,
+      config.env,
+      config.ports,
+      config.volumes
+    );
 
-  console.log(`Created service '${config.name}' successfully!`);
-  return {
-    config,
-    container: container!,
-    image: image!,
-    volumes: volumePromise,
-  };
+    console.log(`Created service '${config.name}' successfully!`);
+    return {
+      config,
+      container: container!,
+      image: image!,
+      volumes: volumePromise,
+    };
+  } catch (err) {
+    console.error("Error creating service:", err);
+    // Rollback: delete service config from data store
+    await DataService.deleteService(config.name);
+    throw err;
+  }
 }
 
 export async function deleteService(serviceId: string): Promise<void> {
