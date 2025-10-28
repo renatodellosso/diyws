@@ -4,6 +4,7 @@ import { ContainerDetails } from "@/lib/types";
 import { formatBytes, formatPercent, throwOnError } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import NotFoundCard from "./NotFoundCard";
 
 export default function ContainerCard({
   container,
@@ -14,13 +15,13 @@ export default function ContainerCard({
 }) {
   const [stateUpdating, setStateUpdating] = useState(false);
 
-  const isRunning = container.State === "running";
-  const containerName = container.Names?.join(", ") || container.Id;
+  const isRunning = container?.State === "running";
+  const containerName = container?.Names?.join(", ") || container?.Id;
 
   function setCurrentContainer(updatedContainer: ContainerDetails) {
     updateServerState((prev) => ({
       containers: prev.containers.map((c) =>
-        c.Id === updatedContainer.Id ? updatedContainer : c
+        c.Id === updatedContainer?.Id ? updatedContainer : c
       ),
     }));
   }
@@ -70,6 +71,10 @@ export default function ContainerCard({
   useEffect(() => {
     setCurrentContainer(container);
   }, [container]);
+
+  if (!container) {
+    return <NotFoundCard noun="Container" />;
+  }
 
   return (
     <div className="card bg-base-100 shadow-sm">
