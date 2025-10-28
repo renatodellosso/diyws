@@ -2,7 +2,7 @@ import api from "@/lib/api";
 import { UpdateServerStateFn } from "@/lib/ServerStateContext";
 import { ContainerDetails } from "@/lib/types";
 import { formatBytes, formatPercent, throwOnError } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import NotFoundCard from "./NotFoundCard";
 import { FiArrowRight } from "react-icons/fi";
@@ -19,13 +19,16 @@ export default function ContainerCard({
   const isRunning = container?.State === "running";
   const containerName = container?.Names?.join(", ") || container?.Id;
 
-  function setCurrentContainer(updatedContainer: ContainerDetails) {
-    updateServerState((prev) => ({
-      containers: prev.containers.map((c) =>
-        c.Id === updatedContainer?.Id ? updatedContainer : c
-      ),
-    }));
-  }
+  const setCurrentContainer = useCallback(
+    (updatedContainer: ContainerDetails) => {
+      updateServerState((prev) => ({
+        containers: prev.containers.map((c) =>
+          c.Id === updatedContainer?.Id ? updatedContainer : c
+        ),
+      }));
+    },
+    [updateServerState]
+  );
 
   async function toggleContainerState() {
     const newState = !isRunning;
@@ -71,7 +74,7 @@ export default function ContainerCard({
 
   useEffect(() => {
     setCurrentContainer(container);
-  }, [container]);
+  }, [container, setCurrentContainer]);
 
   if (!container) {
     return <NotFoundCard noun="Container" />;

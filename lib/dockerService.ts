@@ -185,4 +185,6 @@ class DockerService {
   }
 }
 
-export default new DockerService();
+const dockerService = new DockerService();
+
+export default dockerService;
