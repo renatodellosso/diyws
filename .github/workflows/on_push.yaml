@@ -13,3 +13,7 @@ jobs:
 
   formatting:
     uses: ./.github/workflows/formatting.yaml
+
+  cd:
+    needs: ci
+    uses: ./.github/workflows/cd.yaml
