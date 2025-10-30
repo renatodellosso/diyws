@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "install": "node scripts/install.ts",
+    "setup": "node scripts/setup.ts",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
