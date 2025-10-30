@@ -61,6 +61,7 @@ const api = {
             containerDestination: z.ZodString;
           }>
         >;
+        startContainer: z.ZodOptional<z.ZodBoolean>;
       }>
     >({
       bodySchema: z.object({
@@ -80,6 +81,7 @@ const api = {
             containerDestination: z.string(),
           })
         ),
+        startContainer: z.boolean().optional(),
       }),
     }),
     serviceId: dynamicRoute(z.string()).with({

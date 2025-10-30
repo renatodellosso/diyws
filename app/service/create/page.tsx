@@ -17,6 +17,7 @@ export default function CreateServicePage() {
       exists: boolean | null;
     })[]
   >([]);
+  const [startContainer, setStartContainer] = useState(true);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -50,7 +51,10 @@ export default function CreateServicePage() {
     };
 
     const promise = api.services
-      .create(serviceConfig)
+      .create({
+        ...serviceConfig,
+        startContainer,
+      })
       .then((res) => {
         console.log(res, res.ok, res.status);
         return res;
@@ -275,6 +279,19 @@ export default function CreateServicePage() {
           >
             Add Volume
           </button>
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="legend">Start Container</legend>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={startContainer}
+              onChange={(e) => setStartContainer(e.target.checked)}
+              className="checkbox"
+            />
+            Start the container immediately after creation
+          </label>
         </fieldset>
 
         <button type="submit" className="btn btn-primary">
