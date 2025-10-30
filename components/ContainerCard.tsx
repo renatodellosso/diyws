@@ -72,10 +72,6 @@ export default function ContainerCard({
     setCurrentContainer(data);
   }
 
-  useEffect(() => {
-    setCurrentContainer(container);
-  }, [container, setCurrentContainer]);
-
   if (!container) {
     return <NotFoundCard noun="Container" />;
   }

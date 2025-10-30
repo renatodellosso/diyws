@@ -5,7 +5,7 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import ServerStateContext from '@/lib/ServerStateContext';
 import { ServerState } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from '@/lib/api';
 import LoadingScreen from '@/components/screens/LoadingScreen';
 import Header from '@/components/Header';
@@ -39,13 +39,15 @@ export default function RootLayout({
     setLastUpdated(new Date());
     setPingTimeMs(performance.now() - start);
   }
-
-  function update(update: (prev: ServerState) => Partial<ServerState>) {
-    setServerState((prevState) => ({
-      ...prevState!,
-      ...update(prevState!),
-    }));
-  }
+  const update = useCallback(
+    (update: (prev: ServerState) => Partial<ServerState>) => {
+      setServerState((prevState) => ({
+        ...prevState!,
+        ...update(prevState!),
+      }));
+    },
+    [setServerState]
+  );
 
   useEffect(() => {}, []);
 
