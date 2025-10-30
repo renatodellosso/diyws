@@ -2,15 +2,16 @@ import {
   ApiSchema,
   dynamicRoute,
   initApiClient,
-} from '@renatodellosso/typed-api-client/client';
+} from "@renatodellosso/typed-api-client/client";
 import {
   DELETE,
   GET,
   PATCH,
   POST,
-} from '@renatodellosso/typed-api-client/helpers';
-import { ContainerDetails, ServerState, Service, ServiceConfig } from './types';
-import z from 'zod';
+} from "@renatodellosso/typed-api-client/helpers";
+import { ContainerDetails, ServerState, Service, ServiceConfig } from "./types";
+import z from "zod";
+import { VolumeInspectInfo } from "dockerode";
 
 const api = {
   serverState: {
@@ -48,9 +49,9 @@ const api = {
             containerPort: z.ZodNumber;
             hostPort: z.ZodNumber;
             protocol: z.ZodEnum<{
-              tcp: 'tcp';
-              udp: 'udp';
-              sctp: 'sctp';
+              tcp: "tcp";
+              udp: "udp";
+              sctp: "sctp";
             }>;
           }>
         >;
@@ -70,7 +71,7 @@ const api = {
           z.object({
             containerPort: z.number(),
             hostPort: z.number(),
-            protocol: z.enum(['tcp', 'udp', 'sctp']),
+            protocol: z.enum(["tcp", "udp", "sctp"]),
           })
         ),
         volumes: z.array(
@@ -85,11 +86,16 @@ const api = {
       delete: DELETE<void>(),
     }),
   },
+  volumes: {
+    volumeName: dynamicRoute(z.string()).with({
+      get: GET<VolumeInspectInfo | {}>(),
+    }),
+  },
 } satisfies ApiSchema;
 
 initApiClient(
   api,
-  typeof location !== 'undefined' ? `${location.origin}/api` : ''
+  typeof location !== "undefined" ? `${location.origin}/api` : ""
 );
 
 export default api;

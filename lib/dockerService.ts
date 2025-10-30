@@ -1,10 +1,10 @@
-import Docker from 'dockerode';
+import Docker from "dockerode";
 import {
   ContainerDetails,
   PortMapping,
   ServiceConfig,
   VolumeConfig,
-} from './types';
+} from "./types";
 
 class DockerService {
   docker: Docker;
@@ -54,7 +54,7 @@ class DockerService {
     const container = this.docker.getContainer(containerInfo.Id);
     const [details, stats] = await Promise.all([
       container.inspect(),
-      containerInfo.State === 'running'
+      containerInfo.State === "running"
         ? container.stats({ stream: false })
         : undefined,
     ]);
@@ -93,32 +93,32 @@ class DockerService {
       return existing;
     }
 
-    let state: 'waiting' | 'finished' | 'error' = 'waiting';
+    let state: "waiting" | "finished" | "error" = "waiting";
 
     console.log(`Pulling image: ${imageName}`);
     this.docker.pull(imageName, {}, (err, stream) => {
       if (err) {
-        console.error('Error pulling image:', err);
-        state = 'error';
+        console.error("Error pulling image:", err);
+        state = "error";
         return;
       }
       this.docker.modem.followProgress(stream!, (pullErr, output) => {
         if (pullErr) {
-          console.error('Error during image pull:', pullErr);
-          state = 'error';
+          console.error("Error during image pull:", pullErr);
+          state = "error";
           return;
         }
         console.log(`Successfully pulled image: ${imageName}`);
-        state = 'finished';
+        state = "finished";
       });
     });
 
     // Wait for the pull to finish
-    while (state === 'waiting') {
+    while (state === "waiting") {
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
-    if (state === 'error') {
+    if (state === "error") {
       throw new Error(`Failed to pull image: ${imageName}`);
     }
 
@@ -169,6 +169,15 @@ class DockerService {
       .then((res) => res.Volumes || []);
 
     return volumes;
+  }
+
+  async getVolume(volumeName: string) {
+    try {
+      const volume = this.docker.getVolume(volumeName);
+      return await volume.inspect();
+    } catch {
+      return null;
+    }
   }
 
   /**

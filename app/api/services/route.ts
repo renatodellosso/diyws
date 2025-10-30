@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     return NextResponse.json(service, { status: 201 });
   } catch (error: any) {
     if (error instanceof Error) {
-      return errorResponse(error.message, 400);
+      return errorResponse(error);
     }
   }
 }

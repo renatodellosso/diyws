@@ -1,19 +1,22 @@
-'use client';
+"use client";
 
-import api from '@/lib/api';
-import { PortMapping, ServiceConfig, VolumeConfig } from '@/lib/types';
-import { throwOnError } from '@/lib/utils';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { FiTrash } from 'react-icons/fi';
-import { set } from 'zod';
+import api from "@/lib/api";
+import { PortMapping, ServiceConfig, VolumeConfig } from "@/lib/types";
+import { throwOnError } from "@/lib/utils";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { FiTrash } from "react-icons/fi";
 
 export default function CreateServicePage() {
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [env, setEnv] = useState('');
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
+  const [env, setEnv] = useState("");
   const [ports, setPorts] = useState<PortMapping[]>([]);
-  const [volumes, setVolumes] = useState<VolumeConfig[]>([]);
+  const [volumes, setVolumes] = useState<
+    (VolumeConfig & {
+      exists: boolean | null;
+    })[]
+  >([]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -38,8 +41,8 @@ export default function CreateServicePage() {
       image,
       env: Object.fromEntries(
         env
-          .split('\n')
-          .map((line) => line.split('='))
+          .split("\n")
+          .map((line) => line.split("="))
           .filter(([key, value]) => key && value)
       ),
       ports,
@@ -62,7 +65,7 @@ export default function CreateServicePage() {
     });
 
     await promise;
-    location.href = '/';
+    location.href = "/";
   }
 
   function updatePort(index: number, field: keyof PortMapping, value: string) {
@@ -76,6 +79,32 @@ export default function CreateServicePage() {
     };
     mapping[field] = Number(value);
     setPorts(newPorts);
+  }
+
+  async function updateVolumeExists(index: number) {
+    const volumeName = volumes[index].volumeName;
+    if (!volumeName) return;
+
+    try {
+      const res = await api.volumes
+        .volumeName(volumeName)
+        .get()
+        .then((res) => {
+          if (res.status >= 400 && res.status !== 404) {
+            throwOnError(res);
+          }
+          return res;
+        });
+
+      const newVolumes = [...volumes];
+      newVolumes[index].exists = res.status < 400;
+
+      setVolumes(newVolumes);
+    } catch (error) {
+      toast.error(
+        `Error checking volume '${volumeName}': ${error instanceof Error ? error.message : "Unknown error"}`
+      );
+    }
   }
 
   return (
@@ -124,16 +153,16 @@ export default function CreateServicePage() {
           {ports.map((port, index) => (
             <div key={index} className="flex gap-2 mb-2">
               <input
-                value={port.containerPort || ''}
+                value={port.containerPort || ""}
                 onChange={(e) =>
-                  updatePort(index, 'containerPort', e.target.value)
+                  updatePort(index, "containerPort", e.target.value)
                 }
                 className="input"
                 placeholder="Container Port"
               />
               <input
-                value={port.hostPort || ''}
-                onChange={(e) => updatePort(index, 'hostPort', e.target.value)}
+                value={port.hostPort || ""}
+                onChange={(e) => updatePort(index, "hostPort", e.target.value)}
                 className="input"
                 placeholder="Host Port"
               />
@@ -142,9 +171,9 @@ export default function CreateServicePage() {
                 onChange={(e) => {
                   const newPorts = [...ports];
                   newPorts[index].protocol = e.target.value as
-                    | 'tcp'
-                    | 'udp'
-                    | 'sctp';
+                    | "tcp"
+                    | "udp"
+                    | "sctp";
                   setPorts(newPorts);
                 }}
                 className="select"
@@ -171,7 +200,7 @@ export default function CreateServicePage() {
             onClick={() =>
               setPorts([
                 ...ports,
-                { containerPort: 0, hostPort: 0, protocol: 'tcp' },
+                { containerPort: 0, hostPort: 0, protocol: "tcp" },
               ])
             }
             className="btn btn-secondary"
@@ -183,38 +212,55 @@ export default function CreateServicePage() {
         <fieldset className="fieldset">
           <legend className="legend">Volumes</legend>
           {volumes.map((volume, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              <input
-                value={volume.volumeName || ''}
-                onChange={(e) => {
-                  const newVolumes = [...volumes];
-                  newVolumes[index].volumeName = e.target.value;
-                  setVolumes(newVolumes);
-                }}
-                className="input"
-                placeholder="Volume Name"
-              />
-              <input
-                value={volume.containerDestination || ''}
-                onChange={(e) => {
-                  const newVolumes = [...volumes];
-                  newVolumes[index].containerDestination = e.target.value;
-                  setVolumes(newVolumes);
-                }}
-                className="input"
-                placeholder="Container Destination"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  const newVolumes = [...volumes];
-                  newVolumes.splice(index, 1);
-                  setVolumes(newVolumes);
-                }}
-                className="btn btn-danger"
-              >
-                <FiTrash />
-              </button>
+            <div key={index}>
+              <div className="flex gap-2 mb-2">
+                <input
+                  value={volume.volumeName || ""}
+                  onChange={(e) => {
+                    const newVolumes = [...volumes];
+                    newVolumes[index].volumeName = e.target.value;
+                    setVolumes(newVolumes);
+                    updateVolumeExists(index);
+                  }}
+                  className="input"
+                  placeholder="Volume Name"
+                />
+                <input
+                  value={volume.containerDestination || ""}
+                  onChange={(e) => {
+                    const newVolumes = [...volumes];
+                    newVolumes[index].containerDestination = e.target.value;
+                    setVolumes(newVolumes);
+                  }}
+                  className="input"
+                  placeholder="Container Destination"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newVolumes = [...volumes];
+                    newVolumes.splice(index, 1);
+                    setVolumes(newVolumes);
+                  }}
+                  className="btn btn-danger"
+                >
+                  <FiTrash />
+                </button>
+              </div>
+              <p className="text-sm text-success">
+                {volume.volumeName === "" ||
+                volume.containerDestination === "" ? (
+                  <span className="text-error">
+                    Please enter volume name and container destination
+                  </span>
+                ) : volume.exists === null ? (
+                  "Checking volume..."
+                ) : volume.exists ? (
+                  "Links to existing volume"
+                ) : (
+                  "Will create new volume"
+                )}
+              </p>
             </div>
           ))}
           <button
@@ -222,7 +268,7 @@ export default function CreateServicePage() {
             onClick={() =>
               setVolumes([
                 ...volumes,
-                { volumeName: '', containerDestination: '' },
+                { volumeName: "", containerDestination: "", exists: null },
               ])
             }
             className="btn btn-secondary"

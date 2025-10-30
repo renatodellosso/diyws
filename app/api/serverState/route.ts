@@ -52,7 +52,7 @@ export async function GET() {
     return NextResponse.json(state);
   } catch (error: any) {
     if (error instanceof Error) {
-      return errorResponse(error.message, 400);
+      return errorResponse(error);
     }
   }
 }

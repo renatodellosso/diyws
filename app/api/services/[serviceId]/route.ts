@@ -23,7 +23,7 @@ export async function DELETE(
     return new Response(null, { status: 204 });
   } catch (error: any) {
     if (error instanceof Error) {
-      return errorResponse(error.message, 400);
+      return errorResponse(error);
     }
   }
 }

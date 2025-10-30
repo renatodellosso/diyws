@@ -10,7 +10,9 @@ export async function throwIfUnauthorized() {
   }
 }
 
-export async function errorResponse(message: string, status: number) {
+export async function errorResponse(error: unknown) {
+  const message = error instanceof Error ? error.message : 'Unknown error';
+  const status = error instanceof Error ? 500 : 400;
   return NextResponse.json({ error: message }, { status });
 }
 

@@ -40,7 +40,7 @@ export async function PATCH(
     return NextResponse.json(containerInfo);
   } catch (error: any) {
     if (error instanceof Error) {
-      return errorResponse(error.message, 400);
+      return errorResponse(error);
     }
   }
 }
