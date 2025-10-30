@@ -59,8 +59,7 @@ async function createContainer(
       },
       Binds: ["/var/run/docker.sock:/var/run/docker.sock"],
       RestartPolicy: {
-        Name: "always",
-        MaximumRetryCount: 5,
+        Name: "unless-stopped",
       },
     },
   });
