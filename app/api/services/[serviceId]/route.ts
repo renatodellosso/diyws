@@ -1,7 +1,7 @@
-import api from '@/lib/api';
-import DataService from '@/lib/DataService';
-import { errorResponse, throwIfUnauthorized } from '@/lib/serverUtils';
-import { deleteService } from '@/lib/serviceUtils';
+import api from "@/lib/api";
+import DataService from "@/lib/DataService";
+import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
+import { deleteService } from "@/lib/serviceUtils";
 
 export async function DELETE(
   request: Request,

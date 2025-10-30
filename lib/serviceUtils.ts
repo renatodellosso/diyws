@@ -1,8 +1,8 @@
-import { ImageInfo, ImageInspectInfo, VolumeInspectInfo } from 'dockerode';
-import { ServiceConfig, Service, ContainerDetails } from './types';
-import dockerService from './dockerService';
-import DataService from './DataService';
-import { tagsToName } from './utils';
+import { ImageInfo, ImageInspectInfo, VolumeInspectInfo } from "dockerode";
+import { ServiceConfig, Service, ContainerDetails } from "./types";
+import dockerService from "./dockerService";
+import DataService from "./DataService";
+import { tagsToName } from "./utils";
 
 export function isValidServiceName(name: string): boolean {
   const regex = /^[a-zA-Z0-9-_]+$/;
@@ -41,11 +41,11 @@ export function populateServices(
  */
 export async function createService(config: ServiceConfig): Promise<Service> {
   // Add :latest tag to image if not present
-  if (!config.image.includes(':')) {
-    config.image += ':latest';
+  if (!config.image.includes(":")) {
+    config.image += ":latest";
   }
 
-  console.log('Creating service with config:', config);
+  console.log("Creating service with config:", config);
 
   await DataService.createService(config);
 
@@ -72,7 +72,7 @@ export async function createService(config: ServiceConfig): Promise<Service> {
       volumes: volumePromise,
     };
   } catch (err) {
-    console.error('Error creating service:', err);
+    console.error("Error creating service:", err);
     // Rollback: delete service config from data store
     await DataService.deleteService(config.name);
     throw err;
@@ -80,18 +80,18 @@ export async function createService(config: ServiceConfig): Promise<Service> {
 }
 
 export async function deleteService(serviceId: string): Promise<void> {
-  console.log('Deleting service with ID:', serviceId);
+  console.log("Deleting service with ID:", serviceId);
 
   await DataService.deleteService(serviceId);
-  console.log('Deleted service config from data store.');
+  console.log("Deleted service config from data store.");
 
   try {
     const container = dockerService.docker.getContainer(serviceId);
     await container.remove({ force: true });
-    console.log('Deleted container:', serviceId);
+    console.log("Deleted container:", serviceId);
   } catch (err: any) {
     if (err.statusCode === 404) {
-      console.log('Container not found, skipping deletion:', serviceId);
+      console.log("Container not found, skipping deletion:", serviceId);
     } else {
       throw err;
     }

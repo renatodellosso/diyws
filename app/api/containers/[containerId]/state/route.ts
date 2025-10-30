@@ -1,7 +1,7 @@
-import api from '@/lib/api';
-import dockerService from '@/lib/dockerService';
-import { throwIfUnauthorized, errorResponse } from '@/lib/serverUtils';
-import { NextResponse } from 'next/server';
+import api from "@/lib/api";
+import dockerService from "@/lib/dockerService";
+import { throwIfUnauthorized, errorResponse } from "@/lib/serverUtils";
+import { NextResponse } from "next/server";
 
 export async function PATCH(
   request: Request,
@@ -32,7 +32,7 @@ export async function PATCH(
 
     const containerInfo = await dockerService.getContainerInfo(containerId);
     if (!containerInfo) {
-      return new Response('Container not found after state change', {
+      return new Response("Container not found after state change", {
         status: 404,
       });
     }

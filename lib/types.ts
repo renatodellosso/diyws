@@ -5,7 +5,7 @@ import {
   ImageInfo,
   ImageInspectInfo,
   VolumeInspectInfo,
-} from 'dockerode';
+} from "dockerode";
 
 export type ServerState = {
   dockerRunning: boolean;
@@ -25,7 +25,7 @@ export type ServerResourceUsage = {
 export type PortMapping = {
   containerPort: number;
   hostPort: number;
-  protocol: 'tcp' | 'udp' | 'sctp';
+  protocol: "tcp" | "udp" | "sctp";
 };
 
 export type VolumeConfig = {

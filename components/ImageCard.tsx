@@ -1,13 +1,13 @@
-import { ImageInfo } from 'dockerode';
-import { FiAlertOctagon } from 'react-icons/fi';
-import NotFoundCard from './NotFoundCard';
+import { ImageInfo } from "dockerode";
+import { FiAlertOctagon } from "react-icons/fi";
+import NotFoundCard from "./NotFoundCard";
 
 export default function ImageCard({ image }: { image: ImageInfo }) {
   if (!image) {
     return <NotFoundCard noun="Image" />;
   }
 
-  const imageName = image.RepoTags ? image.RepoTags.join(', ') : image.Id;
+  const imageName = image.RepoTags ? image.RepoTags.join(", ") : image.Id;
 
   return (
     <div className="card bg-base-100 shadow-sm">

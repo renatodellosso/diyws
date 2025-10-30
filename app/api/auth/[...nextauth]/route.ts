@@ -1,13 +1,13 @@
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 
 const handler = NextAuth({
   providers: [
     Credentials({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        username: { label: 'Username', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (
@@ -17,12 +17,12 @@ const handler = NextAuth({
           return null;
         }
 
-        return { id: 'user' };
+        return { id: "user" };
       },
     }),
   ],
   theme: {
-    colorScheme: 'light',
+    colorScheme: "light",
   },
 });
 
