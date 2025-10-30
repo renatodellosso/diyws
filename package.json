@@ -2,6 +2,7 @@
   "name": "diyws",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -17,8 +18,10 @@
     "docker:prod:start": "docker start -a diyws"
   },
   "dependencies": {
+    "@commander-js/extra-typings": "^14.0.0",
     "@renatodellosso/typed-api-client": "^1.0.12",
     "@types/dockerode": "^3.3.45",
+    "commander": "^14.0.2",
     "cpu-features": "^0.0.10",
     "dockerode": "^4.0.9",
     "next": "15.5.6",

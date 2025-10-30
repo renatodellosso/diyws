@@ -1,10 +1,5 @@
 import Docker from "dockerode";
-import {
-  ContainerDetails,
-  PortMapping,
-  ServiceConfig,
-  VolumeConfig,
-} from "./types";
+import { ContainerDetails, PortMapping, VolumeConfig } from "./types";
 
 class DockerService {
   docker: Docker;
