@@ -58,6 +58,10 @@ async function createContainer(
         "3000/tcp": [{ HostPort: options.port.toString() }],
       },
       Binds: ["/var/run/docker.sock:/var/run/docker.sock"],
+      RestartPolicy: {
+        Name: "always",
+        MaximumRetryCount: 5,
+      },
     },
   });
   return container;
