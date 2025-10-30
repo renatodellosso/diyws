@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "install": "node scripts/install.ts",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
@@ -21,6 +22,7 @@
     "@commander-js/extra-typings": "^14.0.0",
     "@renatodellosso/typed-api-client": "^1.0.12",
     "@types/dockerode": "^3.3.45",
+    "chalk": "^5.6.2",
     "commander": "^14.0.2",
     "cpu-features": "^0.0.10",
     "dockerode": "^4.0.9",
