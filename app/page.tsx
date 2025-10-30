@@ -18,8 +18,8 @@ export default function Dashboard() {
       <h1 className="text-4xl">Dashboard</h1>
 
       <div>
-        <div className="flex items-center gap-2">
-          <h2 className="text-2xl mb-1">Services</h2>
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="text-2xl">Services</h2>
           <Link
             href="/service/create"
             className="rounded-full hover:bg-base-200 hover:shadow-sm transition-all duration-300 p-2 cursor-pointer"
