@@ -11,6 +11,7 @@ import LoadingScreen from "@/components/screens/LoadingScreen";
 import Header from "@/components/Header";
 import { throwOnError } from "@/lib/utils";
 import { getSession, signIn } from "next-auth/react";
+import { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,6 +66,14 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <title>
+        {`${
+          !serverState
+            ? "Loading..."
+            : `${serverState?.services.filter((service) => service.container?.State === "running").length}/${serverState?.services.length}
+            Services Running`
+        } | DIYWS`}
+      </title>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-200`}
       >
