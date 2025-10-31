@@ -16,7 +16,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           tags: ghcr.io/renatodellosso/diyws:latest
-          outputs: type=docker,dest=/tmp/diyws.tar
+          outputs: type=oci,dest=/tmp/diyws.tar
           file: ./Dockerfile.prod
           platforms: amd64,arm64
 
