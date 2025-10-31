@@ -18,7 +18,7 @@ jobs:
           tags: ghcr.io/renatodellosso/diyws:latest
           outputs: type=oci,dest=/tmp/diyws.tar
           file: ./Dockerfile.prod
-          platforms: linux/amd64, linux/arm64
+          platforms: amd64,arm64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
