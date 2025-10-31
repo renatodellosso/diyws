@@ -3,31 +3,6 @@ name: CI
 on: [workflow_call, workflow_dispatch, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and export
-        uses: docker/build-push-action@v6
-        with:
-          tags: ghcr.io/renatodellosso/diyws:latest
-          outputs: type=oci,dest=/tmp/diyws.tar
-          file: ./Dockerfile.prod
-          platforms: amd64,arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: diyws
-          path: /tmp/diyws.tar
-
   lint:
     runs-on: ubuntu-latest
     steps:

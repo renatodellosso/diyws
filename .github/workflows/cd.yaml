@@ -17,16 +17,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Build and export
+        uses: docker/build-push-action@v6
         with:
-          name: diyws
-          path: /tmp
-
-      - name: Load image
-        run: |
-          docker load --input /tmp/diyws.tar
-          docker image ls -a
+          tags: ghcr.io/renatodellosso/diyws:latest
+          outputs: type=oci,dest=/tmp/diyws.tar
+          file: ./Dockerfile.prod
+          platforms: amd64,arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
 
       - name: Sign in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u renatodellosso --password-stdin
