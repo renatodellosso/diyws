@@ -12,7 +12,10 @@ DIYWS is designed to be lightweight. This does occasionally come at the expense 
 
 1. Clone the repository
 1. Run `pnpm install` to install dependencies
-1. Run `pnpm run setup` to set up the application with the following CLI arguments:
+1. Run `pnpm run setup` to set up the application (see options below)
+1. You're done! DIYWS is now running and accessible at the specified URL. It will automatically start when Docker starts.
+
+### Set Up Script Options
 
 - `-s, --secret <secret>`: A secret key used for authentication (required)
 - `-U, --username <username>`: The username for authentication (required)
@@ -21,5 +24,3 @@ DIYWS is designed to be lightweight. This does occasionally come at the expense 
 - `-u, --url <url>`: The base URL for the application (default: http://localhost). %p will be replaced with the specified port number.
 - `-c, --container-name <container-name>`: The name of the Docker container to manage (default: diyws)
 - `-i, --image-url <image-url>`: The Docker image URL to use for the container (default: ghcr.io/renatodellosso/diyws:latest)
-
-1. You're done! DIYWS is now running and accessible at the specified URL. It will automatically start when Docker starts.
