@@ -24,3 +24,13 @@ DIYWS is designed to be lightweight. It consumes ~150 MB of RAM and uses ~0.1% C
 - `-u, --url <url>`: The base URL for the application (default: http://localhost). %p will be replaced with the specified port number.
 - `-c, --container-name <container-name>`: The name of the Docker container to manage (default: diyws)
 - `-i, --image-url <image-url>`: The Docker image URL to use for the container (default: ghcr.io/renatodellosso/diyws:latest)
+
+## Distributed Architecture (WIP)
+
+DIYWS is currently being overhauled to support multiple nodes, allowing you to manage several devices from a single interface.
+
+Here's the plan:
+
+- Each node will control Docker on its own machine.
+- One node will act as the leader, serving the web interface and coordinating with other nodes, in addition to managing its own Docker instance.
+- MDNS will be used for automatic discovery of nodes on the same network.
