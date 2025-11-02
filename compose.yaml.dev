@@ -1,3 +1,5 @@
+include: 
+  - mdns.yaml
 services:
   diyws:
     image: diyws-dev

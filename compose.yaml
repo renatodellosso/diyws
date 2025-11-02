@@ -1,3 +1,5 @@
+include:
+  - mdns.yaml
 services:
   diyws:
     image: diyws
@@ -7,3 +9,4 @@ services:
     volumes:
       - /app/node_modules
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
