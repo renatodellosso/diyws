@@ -5,18 +5,15 @@
   "type": "module",
   "scripts": {
     "setup": "node scripts/setup.ts",
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "docker compose -f compose.yaml.dev up",
+    "start": "docker compose -f compose.yaml up",
+    "build": "docker build -t diyws-dev -f Dockerfile.dev . & docker build -t diyws -f Dockerfile.prod . & wait",
+    "internal:dev": "next dev --turbopack",
+    "internal:build": "next build --turbopack",
+    "internal:start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write .",
-    "docker:dev:build": "docker build -t diyws-dev -f Dockerfile.dev .",
-    "docker:dev:init-container": "docker run --name diyws-dev -p 3000:3000 -v /app/node_modules -v .:/app -v /var/run/docker.sock:/var/run/docker.sock diyws-dev",
-    "docker:dev:start": "docker start -a diyws-dev",
-    "docker:prod:build": "docker build -t diyws -f Dockerfile.prod .",
-    "docker:prod:init-container": "docker run --name diyws -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock diyws",
-    "docker:prod:start": "docker start -a diyws"
+    "prettier:fix": "prettier --write ."
   },
   "dependencies": {
     "@commander-js/extra-typings": "^14.0.0",

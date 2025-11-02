@@ -13,8 +13,8 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run build
+RUN pnpm run internal:build
 
 EXPOSE 3000
 
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm", "run", "internal:start"]
