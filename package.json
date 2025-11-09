@@ -6,7 +6,7 @@
   "scripts": {
     "setup": "node scripts/setup.ts",
     "dev": "docker compose -f compose.yaml.dev up",
-    "start": "docker compose -f compose.yaml up",
+    "start": "docker compose -f compose.yaml.prod up",
     "build": "docker build -t diyws-dev -f Dockerfile.dev . & docker build -t diyws -f Dockerfile.prod . & wait",
     "internal:dev": "next dev --turbopack",
     "internal:build": "next build --turbopack",

@@ -10,20 +10,9 @@ DIYWS is designed to be lightweight. It consumes ~150 MB of RAM and uses ~0.1% C
 
 ## Installation & Set Up
 
-1. Clone the repository
-1. Run `pnpm install` to install dependencies
-1. Run `pnpm run setup` to set up the application (see options below)
-1. You're done! DIYWS is now running and accessible at the specified URL. It will automatically start when Docker starts.
-
-### Set Up Script Options
-
-- `-s, --secret <secret>`: A secret key used for authentication (required)
-- `-U, --username <username>`: The username for authentication (required)
-- `-P, --password <password>`: The password for authentication (required)
-- `-p, --port <port>`: The port number on which the server will listen (default: 3000)
-- `-u, --url <url>`: The base URL for the application (default: http://localhost). %p will be replaced with the specified port number.
-- `-c, --container-name <container-name>`: The name of the Docker container to manage (default: diyws)
-- `-i, --image-url <image-url>`: The Docker image URL to use for the container (default: ghcr.io/renatodellosso/diyws:latest)
+1. Download `compose.yaml` from the repository.
+1. Add a `.env` file based on `.env.template`
+1. Run `docker compose up`
 
 ## Distributed Architecture (WIP)
 
