@@ -77,10 +77,7 @@ export default function ServiceCard({
         </div>
 
         <p className="font-bold">Container</p>
-        <ContainerCard
-          container={container}
-          updateServerState={updateServerState}
-        />
+        <ContainerCard container={container} />
 
         <div className="divider my-1" />
         <p className="font-bold">Image</p>
