@@ -37,9 +37,15 @@ async function registerFollowerWithLeader() {
   }
 
   const followerId = process.env.FOLLOWER_ID;
+  const followerName = process.env.FOLLOWER_NAME;
 
   if (!followerId) {
     console.error("FOLLOWER_ID must be set for follower nodes");
+    return;
+  }
+
+  if (!followerName) {
+    console.error("FOLLOWER_NAME must be set for follower nodes");
     return;
   }
 
@@ -48,7 +54,7 @@ async function registerFollowerWithLeader() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: followerId }),
+    body: JSON.stringify({ id: followerId, name: followerName }),
   });
 
   if (res.ok) {

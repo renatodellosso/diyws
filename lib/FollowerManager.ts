@@ -1,22 +1,24 @@
 import { Follower } from "./types";
 
 export default class FollowerManager {
-  followers: Set<Follower>;
+  followers: {
+    [id: string]: Follower;
+  };
 
   constructor() {
-    this.followers = new Set();
+    this.followers = {};
   }
 
   addFollower(follower: Follower) {
-    this.followers.add(follower);
+    this.followers[follower.id] = follower;
   }
 
-  removeFollower(follower: Follower) {
-    this.followers.delete(follower);
+  removeFollower(id: string) {
+    delete this.followers[id];
   }
 
   listFollowers(): Follower[] {
-    return Array.from(this.followers);
+    return Object.values(this.followers);
   }
 }
 

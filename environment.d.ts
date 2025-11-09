@@ -9,6 +9,7 @@ declare global {
       IS_LEADER: "true" | "false";
       FOLLOWER_PORT: string;
       FOLLOWER_ID: string;
+      FOLLOWER_NAME: string;
       LEADER_IP: string;
       NODE_ENV: "development" | "production";
     }

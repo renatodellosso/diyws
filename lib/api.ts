@@ -97,9 +97,13 @@ const api = {
     /**
      * Register this follower with the leader node
      */
-    post: POST<{ success: boolean }, z.ZodObject<{ id: z.ZodString }>>({
+    post: POST<
+      { success: boolean },
+      z.ZodObject<{ id: z.ZodString; name: z.ZodString }>
+    >({
       bodySchema: z.object({
         id: z.string().min(1).max(100),
+        name: z.string().min(1).max(100),
       }),
     }),
   },

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     }
 
     const followerManager = getFollowerManager();
-    followerManager.addFollower({ id: parsed.data.id });
+    followerManager.addFollower({ id: parsed.data.id, name: parsed.data.name });
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -56,4 +56,5 @@ export type ContainerDetails = Omit<
 
 export type Follower = {
   id: string;
+  name: string;
 };
