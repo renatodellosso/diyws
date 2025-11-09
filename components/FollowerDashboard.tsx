@@ -11,7 +11,6 @@ export default function FollowerDashboard({
 }) {
   return (
     <div>
-      <h2 className="text-2xl mb-1">Follower: {follower.name}</h2>
       {follower.resourceUsage && (
         <ResourceUsageCard resourceUsage={follower.resourceUsage} />
       )}

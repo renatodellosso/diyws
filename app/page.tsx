@@ -69,12 +69,12 @@ export default function Dashboard() {
 
       <div className="divider mx-4" />
 
-      <h2 className="text-2xl mb-1 flex">
-        <span>Inspect Follower</span>
+      <h2 className="text-2xl mb-1 flex items-center">
+        <span className="mb-1">Follower:</span>
         <select
           onChange={(e) => setSelectedFollowerId(e.target.value)}
           value={selectedFollowerId}
-          className="ml-2"
+          className="ml-2 select select-xl"
         >
           {Object.values(serverState.followers).map((follower) => (
             <option key={follower.id} value={follower.id}>
