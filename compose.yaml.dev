@@ -1,5 +1,3 @@
-include: 
-  - mdns.yaml
 services:
   diyws:
     image: diyws-dev
@@ -15,3 +13,5 @@ services:
         - action: sync
           path: .
           target: /app
+    env_file:
+      - .env
