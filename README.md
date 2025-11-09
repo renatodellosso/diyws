@@ -27,3 +27,7 @@ Here's how it works:
 - The leader node maintains a list of follower nodes and their IP addresses.
 - The web interface allows users to select which node to manage.
 - Follower API routes are under the `/api/follower` path. They are inaccessible on the main port for security reasons.
+
+## CI/CD
+
+GitHub Actions are used for CI/CD. On each push to the `main` branch, a new Docker image is built and pushed to GHCR, provided the build succeeded and the linter passes.

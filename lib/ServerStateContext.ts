@@ -17,7 +17,7 @@ const ServerStateContext = createContext<
   containers: [],
   volumes: [],
   services: [],
-  followers: [],
+  followers: {},
   lastUpdated: undefined,
   fetch: async () => {},
   update: (update: (prev: ServerState) => Partial<ServerState>) => {},
