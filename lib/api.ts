@@ -12,7 +12,6 @@ import {
 import { ContainerDetails, ServerState, Service } from "./types";
 import z from "zod";
 import { VolumeInspectInfo } from "dockerode";
-import { register } from "module";
 
 const api = {
   serverState: {
