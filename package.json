@@ -8,9 +8,9 @@
     "dev": "docker compose -f compose.yaml.dev up",
     "start": "docker compose -f compose.yaml.prod up",
     "build": "docker build -t diyws-dev -f Dockerfile.dev . & docker build -t diyws -f Dockerfile.prod . & wait",
-    "internal:dev": "next dev --turbopack",
+    "internal:dev": "NODE_ENV=development node index.ts",
     "internal:build": "next build --turbopack",
-    "internal:start": "next start",
+    "internal:start": "NODE_ENV=production node index.ts",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write ."

@@ -1,5 +1,8 @@
 services:
   diyws:
+    extends:
+      file: base-service.yaml
+      service: diyws
     image: diyws-dev
     build: .
     ports:
@@ -13,5 +16,3 @@ services:
         - action: sync
           path: .
           target: /app
-    env_file:
-      - .env

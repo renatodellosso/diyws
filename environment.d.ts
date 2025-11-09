@@ -5,6 +5,10 @@ declare global {
       NEXTAUTH_SECRET: string;
       USERNAME: string;
       PASSWORD: string;
+      LEADER_PORT: string;
+      FOLLOWER_PORT: string;
+      LEADER_IP: string;
+      NODE_ENV: "development" | "production";
     }
   }
 }
