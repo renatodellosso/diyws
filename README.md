@@ -14,16 +14,16 @@ DIYWS is designed to be lightweight. It consumes ~150 MB of RAM and uses ~0.1% C
 1. Add a `.env` file based on `.env.template`
 1. Run `docker compose up`
 
-## Distributed Architecture (WIP)
+## Distributed Architecture
 
-DIYWS is currently being overhauled to support multiple nodes, allowing you to manage several devices from a single interface.
+DIYWS supports multiple nodes, allowing you to manage several devices from a single interface.
 
-Here's the plan:
+Here's how it works:
 
-- Each follower node will control Docker on its own machine.
-- The leader node will serve the web interface and act as a follower node.
-- The web interface will be served on one port, while follower nodes will communicate on another port.
-- Follower nodes will have the IP address of the leader node configured in their `.env` files.
-- The leader node will maintain a list of follower nodes and their IP addresses.
-- The web interface will allow users to select which node to manage.
+- Each follower node controls Docker on its own machine.
+- The leader node serves the web interface and acts as a follower node.
+- The web interface is served on one port, while follower nodes communicate on another port.
+- Follower nodes have the IP address of the leader node configured in their `.env` files.
+- The leader node maintains a list of follower nodes and their IP addresses.
+- The web interface allows users to select which node to manage.
 - Follower API routes are under the `/api/follower` path. They are inaccessible on the main port for security reasons.
