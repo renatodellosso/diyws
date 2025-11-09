@@ -72,7 +72,6 @@ if (process.env.IS_LEADER === "true") {
   startServer(leader, leaderPort, "Web Interface (Leader Node)", (req) => {
     if (!req.url) return false;
     // Filter out API requests
-    console.log(req.url);
     return !req.url.startsWith("/api/follower");
   }).then(registerFollowerWithLeader);
 } else {

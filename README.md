@@ -26,3 +26,4 @@ Here's the plan:
 - Follower nodes will have the IP address of the leader node configured in their `.env` files.
 - The leader node will maintain a list of follower nodes and their IP addresses.
 - The web interface will allow users to select which node to manage.
+- Follower API routes are under the `/api/follower` path. They are inaccessible on the main port for security reasons.

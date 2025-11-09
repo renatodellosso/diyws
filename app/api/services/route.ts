@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       console.log("Started service container:", service.container.Id);
     }
 
-    return NextResponse.json(service, { status: 201 });
+    return NextResponse.json(service.config, { status: 201 });
   } catch (error: any) {
     if (error instanceof Error) {
       return errorResponse(error);

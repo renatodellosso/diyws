@@ -13,11 +13,11 @@ const ServerStateContext = createContext<
     update: UpdateServerStateFn;
   }
 >({
-  dockerRunning: false,
   images: [],
   containers: [],
   volumes: [],
   services: [],
+  followers: [],
   lastUpdated: undefined,
   fetch: async () => {},
   update: (update: (prev: ServerState) => Partial<ServerState>) => {},

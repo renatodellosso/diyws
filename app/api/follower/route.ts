@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { getFollowerManager } from "@/lib/FollowerManager";
+import FollowerManager from "@/lib/FollowerManager";
 import { errorResponse } from "@/lib/serverUtils";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,14 +21,21 @@ export async function POST(req: NextRequest) {
 
     console.log(`Registering follower from IP: ${ip}`);
 
+    if (!ip) {
+      throw new Error("Could not determine follower IP address");
+    }
+
     const body = await req.json();
     const parsed = api.follower.post.bodySchema!.safeParse(body);
     if (!parsed.success) {
       throw new Error(parsed.error.message);
     }
 
-    const followerManager = getFollowerManager();
-    followerManager.addFollower({ id: parsed.data.id, name: parsed.data.name });
+    await FollowerManager.addFollower({
+      id: parsed.data.id,
+      name: parsed.data.name,
+      ip,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

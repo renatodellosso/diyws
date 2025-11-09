@@ -1,10 +1,11 @@
 import * as fs from "fs/promises";
-import { ServiceConfig } from "./types";
+import { FollowerRegistry, ServiceConfig } from "./types";
 import { isValidServiceName } from "./serviceUtils";
 
 namespace DataService {
   const FILE_PATH = "./data/";
   const SERVICES_PATH = FILE_PATH + "services/";
+  const FOLLOWER_REGISTRY_PATH = FILE_PATH + "followers.json";
 
   function getServiceFilePath(name: string) {
     return SERVICES_PATH + name + ".json";
@@ -82,6 +83,30 @@ namespace DataService {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  export async function readFollowerRegistry(): Promise<FollowerRegistry> {
+    try {
+      const data = await fs.readFile(FOLLOWER_REGISTRY_PATH, "utf-8");
+      return JSON.parse(data);
+    } catch (e) {
+      console.error("Error reading follower registry:", e);
+      return {};
+    }
+  }
+
+  export async function writeFollowerRegistry(registry: FollowerRegistry) {
+    try {
+      await fs.mkdir(FILE_PATH, { recursive: true });
+      await fs.writeFile(
+        FOLLOWER_REGISTRY_PATH,
+        JSON.stringify(registry, null, 2),
+        "utf-8"
+      );
+    } catch (e) {
+      console.error("Error writing follower registry:", e);
+      throw e;
     }
   }
 }

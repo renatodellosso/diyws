@@ -9,13 +9,19 @@ import {
   PATCH,
   POST,
 } from "@renatodellosso/typed-api-client/helpers";
-import { ContainerDetails, ServerState, Service } from "./types";
+import {
+  ContainerDetails,
+  FollowerState,
+  MinimalServerState,
+  ServerState,
+  ServiceConfig,
+} from "./types";
 import z from "zod";
 import { VolumeInspectInfo } from "dockerode";
 
 const api = {
   serverState: {
-    get: GET<ServerState>(),
+    get: GET<MinimalServerState>(),
   },
   containers: {
     containerId: dynamicRoute(z.string()).with({
@@ -36,7 +42,7 @@ const api = {
   },
   services: {
     create: POST<
-      | Service
+      | ServiceConfig
       | {
           error: string;
         },
@@ -106,6 +112,9 @@ const api = {
         name: z.string().min(1).max(100),
       }),
     }),
+    serverState: {
+      get: GET<FollowerState>(),
+    },
   },
 } satisfies ApiSchema;
 
@@ -115,3 +124,7 @@ initApiClient(
 );
 
 export default api;
+
+export function getApi(url: string) {
+  return initApiClient(api, url);
+}

@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ServerStateContext from "@/lib/ServerStateContext";
-import { ServerState } from "@/lib/types";
+import { MinimalServerState, ServerState } from "@/lib/types";
 import { useCallback, useEffect, useState } from "react";
 import api from "@/lib/api";
 import LoadingScreen from "@/components/screens/LoadingScreen";
@@ -32,14 +32,36 @@ export default function RootLayout({
   const [lastUpdated, setLastUpdated] = useState<Date>();
   const [pingTimeMs, setPingTimeMs] = useState<number>();
 
-  async function updateServerState() {
+  function unminifyServerState(mini: MinimalServerState): ServerState {
+    const containers: ServerState["containers"] = [];
+    const images: ServerState["images"] = [];
+    const volumes: ServerState["volumes"] = [];
+
+    for (const follower of mini.followers) {
+      containers.push(...follower.containers);
+      images.push(...follower.images);
+      volumes.push(...follower.volumes);
+    }
+
+    return {
+      services: mini.services,
+      followers: mini.followers,
+      containers,
+      images,
+      volumes,
+    };
+  }
+
+  const updateServerState = useCallback(async () => {
     const start = performance.now();
     const res = await api.serverState.get().then(throwOnError);
     const state = await res.json();
-    setServerState(state);
+
+    setServerState(unminifyServerState(state));
     setLastUpdated(new Date());
     setPingTimeMs(performance.now() - start);
-  }
+  }, [setServerState, setLastUpdated, setPingTimeMs]);
+
   const update = useCallback(
     (update: (prev: ServerState) => Partial<ServerState>) => {
       setServerState((prevState) => ({
@@ -62,7 +84,7 @@ export default function RootLayout({
       updateServerState();
       setInterval(updateServerState, 5000);
     });
-  }, []);
+  }, [updateServerState]);
 
   return (
     <html lang="en">

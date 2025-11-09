@@ -1,8 +1,8 @@
 "use client";
 
 import ContainerCard from "@/components/ContainerCard";
+import FollowerCard from "@/components/FollowerCard";
 import ImageCard from "@/components/ImageCard";
-import ResourceUsageCard from "@/components/ResourceUsageCard";
 import ServiceCard from "@/components/ServiceCard";
 import VolumeCard from "@/components/VolumeCard";
 import ServerStateContext from "@/lib/ServerStateContext";
@@ -54,14 +54,27 @@ export default function Dashboard() {
 
       <div className="divider mx-4" />
 
-      <div>
+      <h2 className="text-2xl mb-1">Followers</h2>
+      <div className="flex flex-col gap-2">
+        {serverState.followers.length === 0 ? (
+          <p>No followers found.</p>
+        ) : (
+          serverState.followers.map((follower) => (
+            <FollowerCard key={follower.id} follower={follower} />
+          ))
+        )}
+      </div>
+
+      <div className="divider mx-4" />
+
+      {/* <div>
         <h2 className="text-2xl mb-1">Resource Usage</h2>
         {serverState.resourceUsage ? (
           <ResourceUsageCard resourceUsage={serverState.resourceUsage} />
         ) : (
           <p>No resource usage data available.</p>
         )}
-      </div>
+      </div> */}
 
       <div className="divider mx-4" />
 

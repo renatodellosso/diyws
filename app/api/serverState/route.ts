@@ -1,38 +1,26 @@
 import DataService from "@/lib/DataService";
 import dockerService from "@/lib/dockerService";
-import { getFollowerManager } from "@/lib/FollowerManager";
-import {
-  errorResponse,
-  getResourceUsage,
-  throwIfUnauthorized,
-} from "@/lib/serverUtils";
+import FollowerManager from "@/lib/FollowerManager";
+import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
 import { populateServices } from "@/lib/serviceUtils";
-import { ServerState } from "@/lib/types";
+import { FollowerState, MinimalServerState, ServerState } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
     await throwIfUnauthorized();
 
-    const isDockerUp = await dockerService.isDockerRunning();
+    const followerStates = await FollowerManager.getFollowerStates();
 
-    if (!isDockerUp) {
-      const state: ServerState = {
-        dockerRunning: false,
-        images: [],
-        containers: [],
-        volumes: [],
-        services: [],
-        followers: getFollowerManager().listFollowers(),
-      };
-      return NextResponse.json(state);
+    const containers: FollowerState["containers"] = [];
+    const images: FollowerState["images"] = [];
+    const volumes: FollowerState["volumes"] = [];
+
+    for (const followerState of followerStates) {
+      containers.push(...followerState.containers);
+      images.push(...followerState.images);
+      volumes.push(...followerState.volumes);
     }
-
-    const [images, containers, volumes] = await Promise.all([
-      dockerService.getImages(),
-      dockerService.getContainers(),
-      dockerService.getVolumes(),
-    ]);
 
     const serviceConfigs = await DataService.getServiceList();
     const services = populateServices(
@@ -42,14 +30,9 @@ export async function GET() {
       volumes
     );
 
-    const state: ServerState = {
-      dockerRunning: true,
-      images,
-      containers,
-      volumes,
+    const state: MinimalServerState = {
       services,
-      resourceUsage: getResourceUsage(),
-      followers: getFollowerManager().listFollowers(),
+      followers: followerStates,
     };
 
     return NextResponse.json(state);

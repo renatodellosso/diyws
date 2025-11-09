@@ -7,13 +7,24 @@ import {
   VolumeInspectInfo,
 } from "dockerode";
 
-export type ServerState = {
-  followers: Follower[];
+export type MinimalServerState = {
+  followers: FollowerState[];
+  services: Service[];
+};
+
+export type ServerState = MinimalServerState & {
+  containers: ContainerDetails[];
+  images: ImageInfo[];
+  volumes: VolumeInspectInfo[];
+};
+
+export type FollowerState = Follower & LocalFollowerState;
+
+export type LocalFollowerState = {
   dockerRunning: boolean;
   images: ImageInfo[];
   containers: ContainerDetails[];
   volumes: VolumeInspectInfo[];
-  services: Service[];
   resourceUsage?: ServerResourceUsage;
 };
 
@@ -55,6 +66,11 @@ export type ContainerDetails = Omit<
 > & { stats?: ContainerStats } & ContainerInfo;
 
 export type Follower = {
+  ip: string;
   id: string;
   name: string;
+};
+
+export type FollowerRegistry = {
+  [id: string]: Follower;
 };

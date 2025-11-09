@@ -13,14 +13,6 @@ export default function Header() {
           DIYWS
         </Link>
         <p>
-          Docker Status:{" "}
-          {serverState.dockerRunning ? (
-            <span className="text-success">Online</span>
-          ) : (
-            <span className="text-error">Offline</span>
-          )}
-        </p>
-        <p>
           {
             serverState.services.filter((s) => s.container?.State === "running")
               .length
