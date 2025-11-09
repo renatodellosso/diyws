@@ -1,7 +1,11 @@
 import api from "@/lib/api";
 import dockerService from "@/lib/dockerService";
+import FollowerManager from "@/lib/FollowerManager";
 import { errorResponse, throwIfUnauthorized } from "@/lib/serverUtils";
-import { createService } from "@/lib/serviceUtils";
+import {
+  createServiceOnFollower,
+  createServiceOnLeader,
+} from "@/lib/serviceUtils";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -17,16 +21,22 @@ export async function POST(request: Request) {
 
     const { startContainer, ...config } = parsed.data;
 
-    const service = await createService(config);
-
-    console.log("Created service:", service.config);
-
-    if (startContainer && service.container) {
-      await dockerService.setContainerState(service.container.Id, true);
-      console.log("Started service container:", service.container.Id);
+    const follower = await FollowerManager.getFollowerById(config.followerId);
+    if (!follower) {
+      throw new Error(`Follower with ID ${config.followerId} not found`);
     }
 
-    return NextResponse.json(service.config, { status: 201 });
+    await createServiceOnLeader(config);
+    await FollowerManager.forwardRequestToFollower(
+      follower,
+      "/services",
+      "POST",
+      { startContainer, ...config }
+    );
+
+    console.log("Created service:", config);
+
+    return NextResponse.json(config, { status: 201 });
   } catch (error: any) {
     if (error instanceof Error) {
       return errorResponse(error);

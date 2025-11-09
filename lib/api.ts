@@ -49,6 +49,7 @@ const api = {
       z.ZodObject<{
         name: z.ZodString;
         image: z.ZodString;
+        followerId: z.ZodString;
         env: z.ZodRecord<z.ZodString, z.ZodString>;
         ports: z.ZodArray<
           z.ZodObject<{
@@ -73,6 +74,7 @@ const api = {
       bodySchema: z.object({
         name: z.string(),
         image: z.string(),
+        followerId: z.string(),
         env: z.record(z.string(), z.string()),
         ports: z.array(
           z.object({
@@ -114,6 +116,62 @@ const api = {
     }),
     serverState: {
       get: GET<FollowerState>(),
+    },
+    services: {
+      create: POST<
+        | ServiceConfig
+        | {
+            error: string;
+          },
+        z.ZodObject<{
+          name: z.ZodString;
+          image: z.ZodString;
+          followerId: z.ZodString;
+          env: z.ZodRecord<z.ZodString, z.ZodString>;
+          ports: z.ZodArray<
+            z.ZodObject<{
+              containerPort: z.ZodNumber;
+              hostPort: z.ZodNumber;
+              protocol: z.ZodEnum<{
+                tcp: "tcp";
+                udp: "udp";
+                sctp: "sctp";
+              }>;
+            }>
+          >;
+          volumes: z.ZodArray<
+            z.ZodObject<{
+              volumeName: z.ZodString;
+              containerDestination: z.ZodString;
+            }>
+          >;
+          startContainer: z.ZodOptional<z.ZodBoolean>;
+        }>
+      >({
+        bodySchema: z.object({
+          name: z.string(),
+          image: z.string(),
+          followerId: z.string(),
+          env: z.record(z.string(), z.string()),
+          ports: z.array(
+            z.object({
+              containerPort: z.number(),
+              hostPort: z.number(),
+              protocol: z.enum(["tcp", "udp", "sctp"]),
+            })
+          ),
+          volumes: z.array(
+            z.object({
+              volumeName: z.string(),
+              containerDestination: z.string(),
+            })
+          ),
+          startContainer: z.boolean().optional(),
+        }),
+      }),
+      serviceId: dynamicRoute(z.string()).with({
+        delete: DELETE<void>(),
+      }),
     },
   },
 } satisfies ApiSchema;

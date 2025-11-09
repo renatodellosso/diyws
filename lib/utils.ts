@@ -1,6 +1,5 @@
 import { ImageInfo, ImageInspectInfo } from "dockerode";
-import z from "zod";
-import { ServiceConfig } from "./types";
+import { ServerResourceUsage } from "./types";
 
 export function bytesToGb(bytes: number): number {
   return bytes / (1024 * 1024 * 1024);
@@ -33,4 +32,8 @@ export function tagsToName(image: ImageInfo | ImageInspectInfo): string {
     return image.RepoTags[0];
   }
   return "<none>:<none>";
+}
+
+export function getAvailableRam(usage: ServerResourceUsage): number {
+  return usage.memoryLimitBytes - usage.memoryUsageBytes;
 }

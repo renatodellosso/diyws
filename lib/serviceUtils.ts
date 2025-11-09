@@ -36,10 +36,7 @@ export function populateServices(
   });
 }
 
-/**
- * Throws if service name is invalid or already in use.
- */
-export async function createService(config: ServiceConfig): Promise<Service> {
+export async function createServiceOnLeader(config: ServiceConfig) {
   // Add :latest tag to image if not present
   if (!config.image.includes(":")) {
     config.image += ":latest";
@@ -48,6 +45,18 @@ export async function createService(config: ServiceConfig): Promise<Service> {
   console.log("Creating service with config:", config);
 
   await DataService.createService(config);
+}
+
+/**
+ * Throws if service name is invalid or already in use.
+ */
+export async function createServiceOnFollower(
+  config: ServiceConfig
+): Promise<Service> {
+  // Add :latest tag to image if not present
+  if (!config.image.includes(":")) {
+    config.image += ":latest";
+  }
 
   try {
     const image = await dockerService.createImage(config.image);
@@ -79,12 +88,15 @@ export async function createService(config: ServiceConfig): Promise<Service> {
   }
 }
 
-export async function deleteService(serviceId: string): Promise<void> {
+export async function deleteServiceOnLeader(serviceId: string): Promise<void> {
   console.log("Deleting service with ID:", serviceId);
-
   await DataService.deleteService(serviceId);
   console.log("Deleted service config from data store.");
+}
 
+export async function deleteServiceOnFollower(
+  serviceId: string
+): Promise<void> {
   try {
     const container = dockerService.docker.getContainer(serviceId);
     await container.remove({ force: true });

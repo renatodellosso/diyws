@@ -1,13 +1,17 @@
 "use client";
 
 import api from "@/lib/api";
+import ServerStateContext from "@/lib/ServerStateContext";
 import { PortMapping, ServiceConfig, VolumeConfig } from "@/lib/types";
-import { throwOnError } from "@/lib/utils";
-import { useState } from "react";
+import { formatBytes, getAvailableRam, throwOnError } from "@/lib/utils";
+import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { FiTrash } from "react-icons/fi";
 
 export default function CreateServicePage() {
+  const serverState = useContext(ServerStateContext);
+
+  const [followerId, setFollowerId] = useState("");
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [env, setEnv] = useState("");
@@ -37,7 +41,13 @@ export default function CreateServicePage() {
       }
     }
 
+    if (!followerId) {
+      toast.error("Please select a follower.");
+      return;
+    }
+
     const serviceConfig: ServiceConfig = {
+      followerId,
       name,
       image,
       env: Object.fromEntries(
@@ -115,6 +125,33 @@ export default function CreateServicePage() {
     <div className="p-4">
       <h1 className="text-4xl mb-4">Create New Service</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <fieldset className="fieldset">
+          <legend className="legend">Follower ID</legend>
+          <select
+            value={followerId}
+            onChange={(e) => setFollowerId(e.target.value)}
+            className="w-full select"
+            required
+          >
+            <option value="" disabled>
+              Select Follower
+            </option>
+            {Object.values(serverState.followers).map((follower) => (
+              <option key={follower.id} value={follower.id}>
+                {follower.name} (
+                {formatBytes(getAvailableRam(follower.resourceUsage!))}{" "}
+                available,{" "}
+                {
+                  serverState.services.filter(
+                    (s) => s.config.followerId === follower.id
+                  ).length
+                }{" "}
+                services already assigned)
+              </option>
+            ))}
+          </select>
+        </fieldset>
+
         <fieldset className="fieldset">
           <legend className="legend">Name</legend>
           <input

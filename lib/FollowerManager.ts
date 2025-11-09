@@ -67,6 +67,49 @@ namespace FollowerManager {
       ...localState,
     };
   }
+
+  export async function getFollowerById(
+    followerId: string
+  ): Promise<Follower | null> {
+    const registry = await getFollowerRegistry();
+    return registry[followerId] || null;
+  }
+
+  /**
+   *
+   * @param follower
+   * @param path must contain a leading slash. Relative to /api/follower on the follower.
+   * @param method
+   * @param body
+   * @returns
+   */
+  export async function forwardRequestToFollower(
+    follower: Follower,
+    path: string,
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
+    body?: any
+  ) {
+    const req = await fetch(
+      `http://${follower.ip}:${process.env.FOLLOWER_PORT}/api/follower${path}`,
+      {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!req.ok) {
+      throw new Error(
+        `Failed to forward request to follower ${follower.name} (${follower.ip})`
+      );
+    }
+
+    console.log(
+      `FORWARDED ${method} ${path} ${req.status} (follower ${follower.name} [${follower.ip}])`
+    );
+  }
 }
 
 export default FollowerManager;

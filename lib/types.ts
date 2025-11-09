@@ -52,6 +52,7 @@ export type VolumeConfig = {
 export type ServiceConfig = {
   name: string;
   image: string;
+  followerId: string;
   env: Record<string, string>;
   ports: PortMapping[];
   volumes: VolumeConfig[];
