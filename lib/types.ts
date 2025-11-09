@@ -12,7 +12,11 @@ export type MinimalServerState = {
   services: Service[];
 };
 
-export type ServerState = MinimalServerState & {
+export type ServerState = {
+  followers: {
+    [id: string]: FollowerState;
+  };
+  services: Service[];
   containers: ContainerDetails[];
   images: ImageInfo[];
   volumes: VolumeInspectInfo[];

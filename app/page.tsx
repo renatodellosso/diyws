@@ -1,17 +1,19 @@
 "use client";
 
-import ContainerCard from "@/components/ContainerCard";
 import FollowerCard from "@/components/FollowerCard";
-import ImageCard from "@/components/ImageCard";
+import FollowerDashboard from "@/components/FollowerDashboard";
 import ServiceCard from "@/components/ServiceCard";
-import VolumeCard from "@/components/VolumeCard";
 import ServerStateContext from "@/lib/ServerStateContext";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 
 export default function Dashboard() {
   const serverState = useContext(ServerStateContext);
+
+  const [selectedFollowerId, setSelectedFollowerId] = useState<string>(
+    Object.values(serverState.followers)[0]?.id || ""
+  );
 
   return (
     <div className="p-4">
@@ -56,10 +58,10 @@ export default function Dashboard() {
 
       <h2 className="text-2xl mb-1">Followers</h2>
       <div className="flex flex-col gap-2">
-        {serverState.followers.length === 0 ? (
+        {Object.values(serverState.followers).length === 0 ? (
           <p>No followers found.</p>
         ) : (
-          serverState.followers.map((follower) => (
+          Object.values(serverState.followers).map((follower) => (
             <FollowerCard key={follower.id} follower={follower} />
           ))
         )}
@@ -67,63 +69,22 @@ export default function Dashboard() {
 
       <div className="divider mx-4" />
 
-      {/* <div>
-        <h2 className="text-2xl mb-1">Resource Usage</h2>
-        {serverState.resourceUsage ? (
-          <ResourceUsageCard resourceUsage={serverState.resourceUsage} />
-        ) : (
-          <p>No resource usage data available.</p>
-        )}
-      </div> */}
+      <h2 className="text-2xl mb-1 flex">
+        <span>Inspect Follower</span>
+        <select
+          onChange={(e) => setSelectedFollowerId(e.target.value)}
+          value={selectedFollowerId}
+          className="ml-2"
+        >
+          {Object.values(serverState.followers).map((follower) => (
+            <option key={follower.id} value={follower.id}>
+              {follower.name}
+            </option>
+          ))}
+        </select>
+      </h2>
 
-      <div className="divider mx-4" />
-
-      <div>
-        <h2 className="text-2xl mb-1">Containers</h2>
-        <div className="flex flex-col gap-2">
-          {serverState.containers.length === 0 ? (
-            <p>No containers found.</p>
-          ) : (
-            serverState.containers.map((container) => (
-              <ContainerCard
-                key={container.Id}
-                container={container}
-                updateServerState={serverState.update}
-              />
-            ))
-          )}
-        </div>
-      </div>
-
-      <div className="divider mx-4" />
-
-      <div>
-        <h2 className="text-2xl mb-1">Images</h2>
-        <div className="flex flex-col gap-2">
-          {serverState.images.length === 0 ? (
-            <p>No images found.</p>
-          ) : (
-            serverState.images.map((image) => (
-              <ImageCard key={image.Id} image={image} />
-            ))
-          )}
-        </div>
-      </div>
-
-      <div className="divider mx-4" />
-
-      <div>
-        <h2 className="text-2xl mb-1">Volumes</h2>
-        <div className="flex flex-col gap-2">
-          {serverState.volumes.length === 0 ? (
-            <p>No volumes found.</p>
-          ) : (
-            serverState.volumes
-              .sort((a, b) => a.Name.localeCompare(b.Name))
-              .map((volume) => <VolumeCard key={volume.Name} volume={volume} />)
-          )}
-        </div>
-      </div>
+      <FollowerDashboard follower={serverState.followers[selectedFollowerId]} />
     </div>
   );
 }

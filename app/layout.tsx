@@ -36,16 +36,18 @@ export default function RootLayout({
     const containers: ServerState["containers"] = [];
     const images: ServerState["images"] = [];
     const volumes: ServerState["volumes"] = [];
+    const followerMap: ServerState["followers"] = {};
 
     for (const follower of mini.followers) {
       containers.push(...follower.containers);
       images.push(...follower.images);
       volumes.push(...follower.volumes);
+      followerMap[follower.id] = follower;
     }
 
     return {
       services: mini.services,
-      followers: mini.followers,
+      followers: followerMap,
       containers,
       images,
       volumes,
