@@ -20,6 +20,9 @@ DIYWS is currently being overhauled to support multiple nodes, allowing you to m
 
 Here's the plan:
 
-- Each node will control Docker on its own machine.
-- One node will act as the leader, serving the web interface and coordinating with other nodes, in addition to managing its own Docker instance.
-- MDNS will be used for automatic discovery of nodes on the same network.
+- Each follower node will control Docker on its own machine.
+- The leader node will serve the web interface and act as a follower node.
+- The web interface will be served on one port, while follower nodes will communicate on another port.
+- Follower nodes will have the IP address of the leader node configured in their `.env` files.
+- The leader node will maintain a list of follower nodes and their IP addresses.
+- The web interface will allow users to select which node to manage.
