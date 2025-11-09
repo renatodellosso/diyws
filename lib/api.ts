@@ -9,9 +9,10 @@ import {
   PATCH,
   POST,
 } from "@renatodellosso/typed-api-client/helpers";
-import { ContainerDetails, ServerState, Service, ServiceConfig } from "./types";
+import { ContainerDetails, ServerState, Service } from "./types";
 import z from "zod";
 import { VolumeInspectInfo } from "dockerode";
+import { register } from "module";
 
 const api = {
   serverState: {
@@ -91,6 +92,16 @@ const api = {
   volumes: {
     volumeName: dynamicRoute(z.string()).with({
       get: GET<VolumeInspectInfo | {}>(),
+    }),
+  },
+  follower: {
+    /**
+     * Register this follower with the leader node
+     */
+    post: POST<{ success: boolean }, z.ZodObject<{ id: z.ZodString }>>({
+      bodySchema: z.object({
+        id: z.string().min(1).max(100),
+      }),
     }),
   },
 } satisfies ApiSchema;

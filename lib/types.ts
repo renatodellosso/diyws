@@ -8,6 +8,7 @@ import {
 } from "dockerode";
 
 export type ServerState = {
+  followers: Follower[];
   dockerRunning: boolean;
   images: ImageInfo[];
   containers: ContainerDetails[];
@@ -52,3 +53,7 @@ export type ContainerDetails = Omit<
   ContainerInspectInfo,
   keyof ContainerInfo
 > & { stats?: ContainerStats } & ContainerInfo;
+
+export type Follower = {
+  id: string;
+};

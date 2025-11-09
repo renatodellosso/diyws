@@ -1,5 +1,6 @@
 import DataService from "@/lib/DataService";
 import dockerService from "@/lib/dockerService";
+import { getFollowerManager } from "@/lib/FollowerManager";
 import {
   errorResponse,
   getResourceUsage,
@@ -22,6 +23,7 @@ export async function GET() {
         containers: [],
         volumes: [],
         services: [],
+        followers: getFollowerManager().listFollowers(),
       };
       return NextResponse.json(state);
     }
@@ -47,6 +49,7 @@ export async function GET() {
       volumes,
       services,
       resourceUsage: getResourceUsage(),
+      followers: getFollowerManager().listFollowers(),
     };
 
     return NextResponse.json(state);
